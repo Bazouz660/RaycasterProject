@@ -10,7 +10,7 @@
 wall3d_t *new_section(ray_t ray, float view_height, int fov)
 {
     wall3d_t *sec = malloc(sizeof(wall3d_t));
-    float width = 3.2;
+    float width = (float)fov / 200;
     float height = 100000;
     float left_pos = ((float)1920 * (float)((float)ray.index / fov));
     sfColor color;
