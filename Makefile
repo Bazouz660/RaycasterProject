@@ -30,6 +30,15 @@ IWHITE  = $ \x1b[47m
 
 SRC	=	src/core.c	\
 		src/screen.c	\
+		src/raycasting/cast.c	\
+		src/utils/get_min_max.c	\
+		src/collision/level_collision.c	\
+		src/level/grid.c	\
+		src/matrix/matrix.c	\
+		src/entities/update.c	\
+		src/entities/creation.c	\
+		src/entities/movement.c	\
+		src/render/draw.c	\
 		src/inits/init.c	\
 		src/utils/vectors.c	\
 		src/utils/string.c	\

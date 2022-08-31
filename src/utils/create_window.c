@@ -11,10 +11,19 @@ sfRenderWindow *create_window(char const *title)
 {
     sfRenderWindow *Window;
     sfVideoMode mode = sfVideoMode_getDesktopMode();
+    sfContextSettings settings;
 
+    settings.antialiasingLevel = 8;
+    settings.attributeFlags = 0;
+    settings.depthBits = 0;
+    settings.majorVersion = 4.6;
+    settings.minorVersion = 0;
+    settings.sRgbCapable = true;
+    settings.stencilBits = 0;
     mode.bitsPerPixel = 32;
     mode.width = 1920;
     mode.height = 1080;
-    Window = sfRenderWindow_create(mode, title, sfFullscreen | sfClose, NULL);
+    Window = sfRenderWindow_create(mode, title, sfFullscreen | sfClose,
+    &settings);
     return Window;
 }

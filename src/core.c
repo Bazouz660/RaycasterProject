@@ -21,6 +21,8 @@ void render_game(core_t *c)
 {
     update_screen(c);
     update_fps(c);
+    update_entities(c);
+    draw_all(c);
     analyse_events(c);
 }
 
