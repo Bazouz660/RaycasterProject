@@ -70,10 +70,12 @@ sfColor determine_end(core_t *c, sfVector2f start, sfVector2f dir, float maxlen,
             color = sfRectangleShape_getFillColor(c->level.gridc[map.y][map.x]->shape);
         }
     }
-    if (side == 0)
+    ray->side = side;
+    if (side == 0) {
         perpWallDist = (sideDist.x - deltaDist.x);
-    else
+    } else {
         perpWallDist = (sideDist.y - deltaDist.y);
+    }
     if (dir.x >= -0.01 && dir.x <= 0.01) {
         ray->v2.position = start;
         ray->wall_dist = -1;
@@ -96,7 +98,7 @@ sfColor determine_end(core_t *c, sfVector2f start, sfVector2f dir, float maxlen,
 
 }
 
-ray_t new_ray(core_t *c, sfVector2f start, float maxlen, sfVector2f refdir, float angle)
+ray_t new_ray(core_t *c, sfVector2f start, float maxlen, sfVector2f refdir, float angle, int index)
 {
     ray_t ray;
     matrix_t rot_mx = new_rot_matrix(angle);
@@ -104,17 +106,19 @@ ray_t new_ray(core_t *c, sfVector2f start, float maxlen, sfVector2f refdir, floa
     ray.v1.position = start;
     ray.v2.color = determine_end(c, start, dir, maxlen, &ray);
     ray.v1.color = ray.v2.color;
+    ray.angle = angle;
+    ray.index = index;
     free_matrix(&rot_mx);
     return ray;
 }
 
 void cast_rays(core_t *c, entity_t *src)
 {
-    c->render.nb_rays = 60;
+    c->render.nb_rays = 600;
     c->render.rays = NULL;
     c->render.rays = malloc(sizeof(ray_t) * (c->render.nb_rays + 1));
     for (int i = 0; i < c->render.nb_rays; i++) {
         c->render.rays[i] = new_ray(c, src->pos, c->render.render_distance,
-        src->ref_dir, src->angle + ((DR) * (i - c->render.nb_rays / 2)));
+        src->ref_dir, src->angle + ((DR / 10) * (i - c->render.nb_rays / 2)), i);
     }
 }

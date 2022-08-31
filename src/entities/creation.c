@@ -56,7 +56,7 @@ void add_entity(entity_t **head, sfVector2f pos, int id)
 	index++;
 }
 
-void del_capsule(entity_t **head, entity_t *del_node)
+void del_entity(entity_t **head, entity_t *del_node)
 {
 	if (*head == NULL || del_node == NULL)
 		return ;

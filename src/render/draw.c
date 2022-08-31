@@ -52,10 +52,21 @@ void draw_2d(core_t *c)
     draw_entities(c);
 }
 
+void draw_walls(core_t *c)
+{
+    wall3d_t *tmp = c->render3d.walls;
+
+    while (tmp != NULL) {
+        sfRenderWindow_drawRectangleShape(c->render.window, tmp->section, NULL);
+        tmp = tmp->next;
+    }
+}
+
 void draw_3d(core_t *c)
 {
     sfRenderWindow_setView(c->render.window, c->render3d.view);
     sfRenderWindow_drawRectangleShape(c->render.window, c->render3d.sky, NULL);
+    draw_walls(c);
 }
 
 void draw_all(core_t *c)

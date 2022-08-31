@@ -72,8 +72,11 @@ typedef struct ofrect_s {
 typedef struct ray_s {
     sfVertex v1;
     sfVertex v2;
+    float angle;
     float wall_dist;
     int type;
+    int side;
+    int index;
 } ray_t;
 
 typedef struct render_s {
@@ -86,9 +89,17 @@ typedef struct render_s {
     sfVector2i ray_pos;
 } render_t;
 
+typedef struct wall3d_s {
+    int index;
+    sfRectangleShape *section;
+    struct wall3d_s *next;
+    struct wall3d_s *prev;
+} wall3d_t;
+
 typedef struct render3d_s {
     sfView *view;
     sfRectangleShape *sky;
+    wall3d_t *walls;
 } render3d_t;
 
 typedef struct clock_s {
@@ -173,6 +184,7 @@ double absolute(double x);
 int get_arr_len(void const **arr);
 int my_strlen(char const *str);
 char *my_strdup(char const *src);
+sfColor smooth_color(sfColor c1, sfColor c2, double prog);
 
 // Inits
 void init_game(core_t *c);
@@ -221,3 +233,7 @@ void check_level_collisions(core_t *, level_t level, entity_t* entity);
 
 // Raycasting
 void cast_rays(core_t *c, entity_t *src);
+
+// 3d map
+void add_wall(wall3d_t **head, ray_t ray, int fov);
+void del_wall(wall3d_t **head, wall3d_t *del_node);

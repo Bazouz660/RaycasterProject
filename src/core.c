@@ -17,12 +17,26 @@ void analyse_events(core_t *c)
     }
 }
 
+void del_walls(core_t *c)
+{
+    wall3d_t *tmp = c->render3d.walls;
+
+    while (tmp != NULL) {
+        del_wall(&c->render3d.walls, tmp);
+        tmp = tmp->next;
+    }
+}
+
 void render_game(core_t *c)
 {
     update_screen(c);
     update_fps(c);
     update_entities(c);
+    for (int i = 0; i < c->render.nb_rays; i++) {
+        add_wall(&c->render3d.walls, c->render.rays[i], c->render.nb_rays);
+    }
     draw_all(c);
+    del_walls(c);
     analyse_events(c);
 }
 

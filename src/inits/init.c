@@ -28,7 +28,7 @@ void init_level(core_t *c)
     sfVector2f pos = bpos;
     int type = 0;
 
-    c->render.render_distance = 1000;
+    c->render.render_distance = 2000;
     c->level.c_size = (sfVector2f){64, 64};
     c->level.dim.x = 30;
     c->level.dim.y = 17;
@@ -79,6 +79,7 @@ void init_render3d(core_t *c)
     pos = sfView_getCenter(c->render3d.view);
     pos.y -= sfRenderWindow_getSize(c->render.window).y / 2;
     sfRectangleShape_setPosition(c->render3d.sky, pos);
+    c->render3d.walls = NULL;
 }
 
 void init_game(core_t *c)
