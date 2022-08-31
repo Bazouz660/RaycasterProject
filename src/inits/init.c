@@ -57,6 +57,7 @@ void init_level(core_t *c)
 
 void init_view(core_t *c)
 {
+    sfRenderWindow_setMouseCursorVisible(c->render.window, sfFalse);
     c->render.view = sfView_create();
     c->render3d.view = sfView_create();
     sfView_setSize(c->render.view, (sfVector2f){sfRenderWindow_getSize(c->render.window).x, sfRenderWindow_getSize(c->render.window).y});
@@ -70,6 +71,7 @@ void init_view(core_t *c)
 void init_render3d(core_t *c)
 {
     c->render3d.sky = sfRectangleShape_create();
+    c->render3d.ground = sfRectangleShape_create();
     sfVector2f pos;
 
     sfRectangleShape_setFillColor(c->render3d.sky, (sfColor){0, 80, 180, 255});
@@ -79,6 +81,10 @@ void init_render3d(core_t *c)
     pos = sfView_getCenter(c->render3d.view);
     pos.y -= sfRenderWindow_getSize(c->render.window).y / 2;
     sfRectangleShape_setPosition(c->render3d.sky, pos);
+    c->render3d.ground = sfRectangleShape_copy(c->render3d.sky);
+    sfRectangleShape_setFillColor(c->render3d.ground, (sfColor){20, 10, 10, 255});
+    pos.y += sfRenderWindow_getSize(c->render.window).y;
+    sfRectangleShape_setPosition(c->render3d.ground, pos);
     c->render3d.walls = NULL;
 }
 
@@ -87,9 +93,9 @@ void init_game(core_t *c)
     c->render.window = create_window("Raycaster");
     sfRenderWindow_setPosition(c->render.window, (sfVector2i){0, 0});
     c->clock.clock = sfClock_create();
-    c->mouse.last_pos.x = sfMouse_getPositionRenderWindow(c->render.window).x;
-    c->mouse.last_pos.y = sfMouse_getPositionRenderWindow(c->render.window).y;
-    c->mouse.diff = (sfVector2f){0, 0};
+    c->mouse.lastpos.x = sfMouse_getPositionRenderWindow(c->render.window).x;
+    c->mouse.lastpos.y = sfMouse_getPositionRenderWindow(c->render.window).y;
+    c->mouse.diff = (sfVector2i){0, 0};
     srand(time(NULL));
     init_view(c);
     init_fps_text(c);

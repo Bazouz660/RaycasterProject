@@ -60,12 +60,14 @@ void draw_walls(core_t *c)
         sfRenderWindow_drawRectangleShape(c->render.window, tmp->section, NULL);
         tmp = tmp->next;
     }
+    del_walls(c);
 }
 
 void draw_3d(core_t *c)
 {
     sfRenderWindow_setView(c->render.window, c->render3d.view);
     sfRenderWindow_drawRectangleShape(c->render.window, c->render3d.sky, NULL);
+    sfRenderWindow_drawRectangleShape(c->render.window, c->render3d.ground, NULL);
     draw_walls(c);
 }
 

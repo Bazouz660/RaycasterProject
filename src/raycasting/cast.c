@@ -76,12 +76,12 @@ sfColor determine_end(core_t *c, sfVector2f start, sfVector2f dir, float maxlen,
     } else {
         perpWallDist = (sideDist.y - deltaDist.y);
     }
-    if (dir.x >= -0.000001 && dir.x <= 0.000001) {
+    if (dir.x >= -0.00000001 && dir.x <= 0.00000001) {
         ray->v2.position = start;
         ray->wall_dist = -1;
         return sfBlack;
     }
-    if (dir.y >= -0.000001 && dir.y <= 0.000001) {
+    if (dir.y >= -0.00000001 && dir.y <= 0.00000001) {
         ray->v2.position = start;
         ray->wall_dist = -1;
         return sfBlack;
@@ -114,7 +114,7 @@ ray_t new_ray(core_t *c, sfVector2f start, float maxlen, sfVector2f refdir, floa
 
 void cast_rays(core_t *c, entity_t *src)
 {
-    c->render.nb_rays = 640;
+    c->render.nb_rays = 600;
     c->render.rays = NULL;
     c->render.rays = malloc(sizeof(ray_t) * (c->render.nb_rays + 1));
     for (int i = 0; i < c->render.nb_rays; i++) {

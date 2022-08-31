@@ -11,7 +11,7 @@ entity_t *new_entity(sfVector2f pos, int id)
 {
 	entity_t *entity = malloc(sizeof(entity_t));
 
-	entity->angle = 0;
+	entity->angle = 0.01;
 	entity->index = 0;
 	entity->pos = pos;
 	entity->vel = (sfVector2f){0, 0};

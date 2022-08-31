@@ -17,26 +17,39 @@ void analyse_events(core_t *c)
     }
 }
 
-void del_walls(core_t *c)
+void update_mouse(core_t *c)
 {
-    wall3d_t *tmp = c->render3d.walls;
-
-    while (tmp != NULL) {
-        del_wall(&c->render3d.walls, tmp);
-        tmp = tmp->next;
+    c->mouse.lastpos = c->mouse.pos;
+    c->mouse.pos.x = sfMouse_getPositionRenderWindow(c->render.window).x;
+    c->mouse.pos.y = sfMouse_getPositionRenderWindow(c->render.window).y;
+    c->mouse.diff.x = c->mouse.pos.x - c->mouse.lastpos.x;
+    c->mouse.diff.y = c->mouse.pos.y - c->mouse.lastpos.y;
+    if (c->mouse.pos.x >= sfRenderWindow_getSize(c->render.window).x - 1) {
+        c->mouse.pos.x = 1;
+        c->mouse.lastpos.x = 1;
+        sfMouse_setPositionRenderWindow(c->mouse.pos, c->render.window);
     }
+    if (c->mouse.pos.x - 1 < 0) {
+        c->mouse.pos.x = sfRenderWindow_getSize(c->render.window).x;
+        c->mouse.lastpos.x = c->mouse.pos.x;
+        sfMouse_setPositionRenderWindow(c->mouse.pos, c->render.window);
+    }
+}
+
+void update_walls(core_t *c)
+{
+    for (int i = 0; i < c->render.nb_rays; i++)
+        add_wall(&c->render3d.walls, c->render.rays[i], c->render.nb_rays);
 }
 
 void render_game(core_t *c)
 {
     update_screen(c);
+    update_mouse(c);
     update_fps(c);
     update_entities(c);
-    for (int i = 0; i < c->render.nb_rays; i++) {
-        add_wall(&c->render3d.walls, c->render.rays[i], c->render.nb_rays);
-    }
+    update_walls(c);
     draw_all(c);
-    del_walls(c);
     analyse_events(c);
 }
 
@@ -51,8 +64,6 @@ int game_loop(void)
         update_clock(c);
         if (c->clock.seconds > clock + 0.016) {
             clock = c->clock.seconds;
-            c->mouse.pos.x = sfMouse_getPositionRenderWindow(c->render.window).x;
-            c->mouse.pos.y = sfMouse_getPositionRenderWindow(c->render.window).y;
             render_game(c);
         }
     }

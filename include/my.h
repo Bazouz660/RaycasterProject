@@ -99,6 +99,7 @@ typedef struct wall3d_s {
 typedef struct render3d_s {
     sfView *view;
     sfRectangleShape *sky;
+    sfRectangleShape *ground;
     wall3d_t *walls;
 } render3d_t;
 
@@ -116,9 +117,9 @@ typedef struct textures_s {
 } textures_t;
 
 typedef struct mouse_s {
-    sfVector2f pos;
-    sfVector2f last_pos;
-    sfVector2f diff;
+    sfVector2i pos;
+    sfVector2i lastpos;
+    sfVector2i diff;
 } mouse_t;
 
 typedef struct entity_s {
@@ -237,3 +238,4 @@ void cast_rays(core_t *c, entity_t *src);
 // 3d map
 void add_wall(wall3d_t **head, ray_t ray, int fov);
 void del_wall(wall3d_t **head, wall3d_t *del_node);
+void del_walls(core_t *c);

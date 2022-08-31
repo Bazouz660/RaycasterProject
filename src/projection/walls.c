@@ -10,7 +10,7 @@
 wall3d_t *new_section(ray_t ray, float view_height, int fov)
 {
     wall3d_t *sec = malloc(sizeof(wall3d_t));
-    float width = (float)fov / 200;
+    float width = 3.2;
     float height = 100000;
     float left_pos = ((float)1920 * (float)((float)ray.index / fov));
     sfColor color;
@@ -33,8 +33,17 @@ wall3d_t *new_section(ray_t ray, float view_height, int fov)
         sfRectangleShape_setFillColor(sec->section, sfGreen);
     if (ray.type == 5)
         sfRectangleShape_setFillColor(sec->section, sfYellow);
+    sfRectangleShape_setFillColor(sec->section, sfWhite);
     color = sfRectangleShape_getFillColor(sec->section);
-    color = smooth_color(color, sfBlack, 200 / ray.wall_dist);
+    color = smooth_color(color, sfBlack, 100 / ray.wall_dist);
+    if (ray.side == 1) {
+        color.b = (float)color.b * 0.5;
+        color.b < 0 ? color.b = 0 : 0;
+        color.g = (float)color.g * 0.5;
+        color.g < 0 ? color.g = 0 : 0;
+        color.r = (float)color.r * 0.5;
+        color.r < 0 ? color.r = 0 : 0;
+    }
     sfRectangleShape_setFillColor(sec->section, color);
     return sec;
 }
@@ -66,4 +75,14 @@ void del_wall(wall3d_t **head, wall3d_t *del_node)
 		del_node->prev->next = del_node->next;
     sfRectangleShape_destroy(del_node->section);
 	free(del_node);
+}
+
+void del_walls(core_t *c)
+{
+    wall3d_t *tmp = c->render3d.walls;
+
+    while (tmp != NULL) {
+        del_wall(&c->render3d.walls, tmp);
+        tmp = tmp->next;
+    }
 }
