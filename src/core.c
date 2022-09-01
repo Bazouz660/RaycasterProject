@@ -10,10 +10,9 @@
 void analyse_events(core_t *c)
 {
     while (sfRenderWindow_pollEvent(c->render.window, &c->e)) {
-        if (c->e.type == sfEvtClosed)
+        if (c->e.type == sfEvtClosed || sfKeyboard_isKeyPressed(sfKeyEscape)) {
             sfRenderWindow_close(c->render.window);
-        if (sfKeyboard_isKeyPressed(sfKeyEscape))
-            sfRenderWindow_close(c->render.window);
+        }
     }
 }
 
@@ -39,7 +38,7 @@ void update_mouse(core_t *c)
 void update_walls(core_t *c)
 {
     for (int i = 0; i < c->render.nb_rays; i++)
-        add_wall(&c->render3d.walls, c->render.rays[i], c->render.nb_rays);
+        add_wall(c, &c->render3d.walls, c->render.rays[i], c->render.nb_rays);
 }
 
 void render_game(core_t *c)

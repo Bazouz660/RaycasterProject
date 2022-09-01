@@ -114,6 +114,7 @@ typedef struct sounds_s {
 } sounds_t;
 
 typedef struct textures_s {
+    sfTexture *wall[2];
 } textures_t;
 
 typedef struct mouse_s {
@@ -236,6 +237,6 @@ void check_level_collisions(core_t *, level_t level, entity_t* entity);
 void cast_rays(core_t *c, entity_t *src);
 
 // 3d map
-void add_wall(wall3d_t **head, ray_t ray, int fov);
+void add_wall(core_t *c, wall3d_t **head, ray_t ray, int fov);
 void del_wall(wall3d_t **head, wall3d_t *del_node);
 void del_walls(core_t *c);

@@ -23,7 +23,7 @@ entity_t *new_entity(sfVector2f pos, int id)
 	entity->hitbox = sfRectangleShape_create();
 	entity->sprite = sfSprite_create();
 	sfSprite_setTexture(entity->sprite,
-	sfTexture_createFromFile("assets/player.png", NULL), true);
+	sfTexture_createFromFile("assets/player/2dplayer.png", NULL), true);
 	entity->base_scale = (sfVector2f){0.1, 0.1};
 	entity->scale = entity->base_scale;
 	sfSprite_setScale(entity->sprite, entity->scale);

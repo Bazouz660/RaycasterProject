@@ -50,9 +50,9 @@ void init_level(core_t *c)
         }
         pos.y += c->level.c_size.y;
         pos.x = bpos.x;
-        c->level.gridc[i][c->level.dim.x + 1] = NULL;
+        c->level.gridc[i][c->level.dim.x] = NULL;
     }
-    c->level.gridc[c->level.nb_case + 1] = NULL;
+    c->level.gridc[c->level.nb_case] = NULL;
 }
 
 void init_view(core_t *c)
@@ -88,6 +88,18 @@ void init_render3d(core_t *c)
     c->render3d.walls = NULL;
 }
 
+void init_textures(core_t *c)
+{
+    c->textures.wall[0] = sfTexture_createFromFile("assets/walls/brick.jpg", NULL);
+    c->textures.wall[1] = NULL;
+}
+
+void init_mouse(core_t *c)
+{
+    c->mouse.pos.x = sfMouse_getPositionRenderWindow(c->render.window).x;
+    c->mouse.pos.y = sfMouse_getPositionRenderWindow(c->render.window).y;
+}
+
 void init_game(core_t *c)
 {
     c->render.window = create_window("Raycaster");
@@ -97,7 +109,9 @@ void init_game(core_t *c)
     c->mouse.lastpos.y = sfMouse_getPositionRenderWindow(c->render.window).y;
     c->mouse.diff = (sfVector2i){0, 0};
     srand(time(NULL));
+    init_textures(c);
     init_view(c);
+    init_mouse(c);
     init_fps_text(c);
     init_level(c);
     init_player(c);

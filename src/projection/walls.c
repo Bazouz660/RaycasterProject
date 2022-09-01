@@ -7,9 +7,9 @@
 
 #include "my.h"
 
-wall3d_t *new_section(ray_t ray, float view_height, int fov)
+wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
 {
-    wall3d_t *sec = malloc(sizeof(wall3d_t));
+    wall3d_t *sec = malloc(sizeof(*sec));
     float width = 3.2;
     float height = 100000;
     float left_pos = ((float)1920 * (float)((float)ray.index / fov));
@@ -44,15 +44,16 @@ wall3d_t *new_section(ray_t ray, float view_height, int fov)
         color.r = (float)color.r * 0.5;
         color.r < 0 ? color.r = 0 : 0;
     }
+    sfRectangleShape_setTexture(sec->section, texture, false);
     sfRectangleShape_setFillColor(sec->section, color);
     return sec;
 }
 
-void add_wall(wall3d_t **head, ray_t ray, int fov)
+void add_wall(core_t*c, wall3d_t **head, ray_t ray, int fov)
 {
 	static int index = 0;
     int view_height = 540;
-	wall3d_t *nnode = new_section(ray, view_height, fov);
+	wall3d_t *nnode = new_section(c->textures.wall[0], ray, view_height, fov);
 
 	nnode->index = index;
 	nnode->next = (*head);
@@ -80,9 +81,11 @@ void del_wall(wall3d_t **head, wall3d_t *del_node)
 void del_walls(core_t *c)
 {
     wall3d_t *tmp = c->render3d.walls;
+    wall3d_t *tampon;
 
     while (tmp != NULL) {
+        tampon = tmp->next;
         del_wall(&c->render3d.walls, tmp);
-        tmp = tmp->next;
+        tmp = tampon;
     }
 }
