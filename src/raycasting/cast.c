@@ -92,22 +92,37 @@ sfColor determine_end(core_t *c, sfVector2f start, sfVector2f dir, float maxlen,
         ray->wall_dist = -1;
         color = sfBlack;
     }
-    ray->wall_dist = perpWallDist * c->level.c_size.x;
+    ray->wall_dist = (perpWallDist * c->level.c_size.x);
     ray->v2.position = vect_add(start, vect_mult(dir, perpWallDist * c->level.c_size.x));
+
+    double wallX;
+    if (side == 0)
+        wallX = r_pos.y + perpWallDist * dir.y;
+    else
+        wallX = r_pos.x + perpWallDist * dir.x;
+    wallX -= floor((wallX));
+    ray->wall_x = wallX;
     return color;
 
 }
 
-ray_t new_ray(core_t *c, sfVector2f start, float maxlen, sfVector2f refdir, float angle, int index)
+ray_t new_ray(core_t *c, float p_angle, sfVector2f start, float maxlen, sfVector2f refdir, float angle, int index)
 {
     ray_t ray;
     matrix_t rot_mx = new_rot_matrix(angle);
     sfVector2f dir = multiply_vec(&rot_mx, refdir);
+    float c_angle;
     ray.v1.position = start;
     ray.v2.color = determine_end(c, start, dir, maxlen, &ray);
     ray.v1.color = ray.v2.color;
     ray.angle = angle;
     ray.index = index;
+    c_angle = p_angle - angle;
+    if (c_angle < 0)
+        c_angle += 2 * PI;
+    if (c_angle > 2 * PI)
+        c_angle -= 2 * PI;
+    ray.wall_dist *= cos(c_angle);
     free_matrix(&rot_mx);
     return ray;
 }
@@ -118,7 +133,7 @@ void cast_rays(core_t *c, entity_t *src)
     c->render.rays = NULL;
     c->render.rays = malloc(sizeof(ray_t) * (c->render.nb_rays + 1));
     for (int i = 0; i < c->render.nb_rays; i++) {
-        c->render.rays[i] = new_ray(c, src->pos, c->render.render_distance,
+        c->render.rays[i] = new_ray(c, src->angle, src->pos, c->render.render_distance,
         src->ref_dir, src->angle + ((DR / 10) * (i - c->render.nb_rays / 2)), i);
     }
 }

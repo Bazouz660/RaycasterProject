@@ -25,3 +25,17 @@ sfColor smooth_color(sfColor c1, sfColor c2, double prog)
     res.a = c1.a + (diff_a * prog);
     return res;
 }
+
+sfColor darken_color(sfColor c1, double prog)
+{
+    sfColor res = c1;
+
+    if (prog > 1)
+        prog = 1;
+    if (prog < 0)
+        prog = 0;
+    res.r = (float)c1.r * prog;
+    res.g = (float)c1.g * prog;
+    res.b = (float)c1.b * prog;
+    return res;
+}

@@ -1,6 +1,6 @@
 /*
 ** EPITECH PROJECT, 2022
-** SpaceGame
+** RaycasterProject
 ** File description:
 ** string.c
 */
@@ -103,6 +103,25 @@ char *rm_str_char(char **str, char *to_remove)
             res[x] = tmp[i];
             x++;
         }
+    }
+    res[x] = '\0';
+    free(tmp);
+    return res;
+}
+
+char *str_keep_char(char **str, char *to_keep)
+{
+    char *tmp = *str;
+    char *res = malloc(sizeof(char) * (my_strlen(tmp) + 1));
+    int x = 0;
+    int found = 0;
+
+    for (int i = 0; tmp[i] != '\0'; i++) {
+        for (int z = 0; to_keep[z] != '\0'; z++)
+            if (tmp[i] == to_keep[z]) {
+                res[x] = tmp[i];
+                x++;
+            }
     }
     res[x] = '\0';
     free(tmp);

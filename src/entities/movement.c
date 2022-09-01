@@ -16,26 +16,22 @@ void entity_reposition(core_t *c, entity_t *entity)
     entity->acc = (sfVector2f){0, 0};
     if (entity->player == true) {
         if (sfKeyboard_isKeyPressed(sfKeyZ)) {
-            entity->acc = vect_mult(entity->dir, entity->acceleration * 1.2);
-        } else if (sfKeyboard_isKeyPressed(sfKeyS)) {
-            entity->acc = vect_mult(entity->dir, -entity->acceleration * 1.2);
-        }
-        if (sfKeyboard_isKeyPressed(sfKeyQ)) {
-            entity->acc = vect_mult(vect_norm(entity->dir), -entity->acceleration * 1.2);
-        }
-        if (sfKeyboard_isKeyPressed(sfKeyD)) {
-            entity->acc = vect_mult(vect_norm(entity->dir), entity->acceleration * 1.2);
-        }
+            entity->acc = vect_mult(entity->dir, entity->acceleration);
+        } else if (sfKeyboard_isKeyPressed(sfKeyS))
+            entity->acc = vect_mult(entity->dir, -entity->acceleration);
+        if (sfKeyboard_isKeyPressed(sfKeyQ))
+            entity->acc = vect_mult(vect_norm(entity->dir), -entity->acceleration);
+        if (sfKeyboard_isKeyPressed(sfKeyD))
+            entity->acc = vect_mult(vect_norm(entity->dir), entity->acceleration);
         if (c->mouse.diff.x > 0) {
             dampen = false;
             entity->angle_vel += (float)c->mouse.diff.x / 5000;
-        }
-        if (c->mouse.diff.x < 0) {
+        } else if (c->mouse.diff.x < 0) {
             dampen = false;
             entity->angle_vel += (float)c->mouse.diff.x / 5000;
         }
     }
-    entity->acc = vect_mult(vect_unit(entity->acc), entity->acceleration / 2);
+    entity->acc = vect_mult(vect_unit(entity->acc), entity->acceleration / 3);
     entity->vel = vect_add(entity->vel, entity->acc);
     entity->vel = vect_mult(entity->vel, 1 - friction);
     check_level_collisions(c, c->level, entity);

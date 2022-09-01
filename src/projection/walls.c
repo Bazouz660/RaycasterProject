@@ -11,9 +11,12 @@ wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
 {
     wall3d_t *sec = malloc(sizeof(*sec));
     float width = 3.2;
-    float height = 100000;
+    float base_fov = 600;
+    float height = 115000 + (45 * (base_fov - fov));
     float left_pos = ((float)1920 * (float)((float)ray.index / fov));
     sfColor color;
+    sfVector2u t_size = sfTexture_getSize(texture);
+    sfIntRect t_rect = {0.001 * ray.index, 0, 50, t_size.y};
 
     sec->section = sfRectangleShape_create();
     if (ray.type == 0) {
@@ -33,18 +36,14 @@ wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
         sfRectangleShape_setFillColor(sec->section, sfGreen);
     if (ray.type == 5)
         sfRectangleShape_setFillColor(sec->section, sfYellow);
-    sfRectangleShape_setFillColor(sec->section, sfWhite);
+    sfRectangleShape_setFillColor(sec->section, (sfColor){166,142,43,255});
     color = sfRectangleShape_getFillColor(sec->section);
-    color = smooth_color(color, sfBlack, 100 / ray.wall_dist);
+    color = darken_color(color, 100 / ray.wall_dist);
     if (ray.side == 1) {
-        color.b = (float)color.b * 0.5;
-        color.b < 0 ? color.b = 0 : 0;
-        color.g = (float)color.g * 0.5;
-        color.g < 0 ? color.g = 0 : 0;
-        color.r = (float)color.r * 0.5;
-        color.r < 0 ? color.r = 0 : 0;
+        color = darken_color(color, 0.5);
     }
     sfRectangleShape_setTexture(sec->section, texture, false);
+    sfRectangleShape_setTextureRect(sec->section, t_rect);
     sfRectangleShape_setFillColor(sec->section, color);
     return sec;
 }

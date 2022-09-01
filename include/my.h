@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <math.h>
+#include "dirent.h"
 
 #define True 1
 #define False 0
@@ -72,6 +73,7 @@ typedef struct ofrect_s {
 typedef struct ray_s {
     sfVertex v1;
     sfVertex v2;
+    double wall_x;
     float angle;
     float wall_dist;
     int type;
@@ -117,6 +119,16 @@ typedef struct textures_s {
     sfTexture *wall[2];
 } textures_t;
 
+typedef struct find_files_s {
+    DIR *d;
+    int file;
+    struct dirent *dir;
+    char *content;
+    int file_nb;
+    char **found_files;
+    int index;
+} find_files_t;
+
 typedef struct mouse_s {
     sfVector2i pos;
     sfVector2i lastpos;
@@ -152,6 +164,7 @@ typedef struct core_s {
     sounds_t sounds;
     entity_t *entities;
     level_t level;
+    matrix_t *lvl_matrix;
 } core_t;
 
 // Utils
@@ -187,6 +200,14 @@ int get_arr_len(void const **arr);
 int my_strlen(char const *str);
 char *my_strdup(char const *src);
 sfColor smooth_color(sfColor c1, sfColor c2, double prog);
+sfColor darken_color(sfColor c1, double prog);
+char *my_strcpy(char *dest, char const *src);
+char *my_strcat(char *dest, char const *src);
+int my_strcmp(char const *s1, char const *s2);
+char **strwar(const char *str, const char *separators);
+char *rm_str_char(char **str, char *to_remove);
+char *str_keep_char(char **str, char *to_keep);
+int my_getnbr(char const *str);
 
 // Inits
 void init_game(core_t *c);
@@ -212,9 +233,10 @@ float vect_cross(sfVector2f v1, sfVector2f v2);
 float dist_from(sfVector2f p1, sfVector2f p2);
 sfVector2f closest_point_seg(sfVector2f a, sfVector2f b, sfVector2f p);
 
-// Map
+// Level
 grid_case_t *new_grid_case(int index, int type, sfVector2f pos,
 sfVector2f size, int ix, int iy);
+int load_level_matrices(core_t *c);
 
 // Matrix
 matrix_t new_matrix(int rows, int cols);
