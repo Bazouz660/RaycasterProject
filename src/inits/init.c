@@ -75,21 +75,26 @@ void init_view(core_t *c)
 
 void init_render3d(core_t *c)
 {
-    c->render3d.sky = sfRectangleShape_create();
-    c->render3d.ground = sfRectangleShape_create();
+    c->render3d.sky = vrect_create();
+    c->render3d.ground = vrect_create();
     sfVector2f pos;
+    sfVector2f w_size = {sfRenderWindow_getSize(c->render.window).x,
+    sfRenderWindow_getSize(c->render.window).y};
 
-    sfRectangleShape_setFillColor(c->render3d.sky, (sfColor){180, 180, 100, 255});
-    sfRectangleShape_setSize(c->render3d.sky, (sfVector2f){sfRenderWindow_getSize(c->render.window).x,
-    sfRenderWindow_getSize(c->render.window).y});
-    sfRectangleShape_setOrigin(c->render3d.sky, get_rect_center(c->render3d.sky));
+    vrect_setcolor(c->render3d.sky, (sfColor){180, 180, 100, 255}, 0, true);
+    vrect_setcolor(c->render3d.sky, sfBlack, 2, false);
+    vrect_setcolor(c->render3d.sky, sfBlack, 3, false);
+    vrect_setsize(c->render3d.sky, (sfVector2f){w_size.x, w_size.y / 2});
     pos = sfView_getCenter(c->render3d.view);
-    pos.y -= sfRenderWindow_getSize(c->render.window).y / 2;
-    sfRectangleShape_setPosition(c->render3d.sky, pos);
-    c->render3d.ground = sfRectangleShape_copy(c->render3d.sky);
-    sfRectangleShape_setFillColor(c->render3d.ground, (sfColor){111.0 * 0.4, 75.0 * 0.4, 14.0 * 0.4, 255});
-    pos.y += sfRenderWindow_getSize(c->render.window).y;
-    sfRectangleShape_setPosition(c->render3d.ground, pos);
+    pos.y -= w_size.y / 2;
+    pos.x -= w_size.x / 2;
+    vrect_setposition(c->render3d.sky, pos);
+    pos.y += w_size.y / 2;
+    vrect_setsize(c->render3d.ground, (sfVector2f){w_size.x, w_size.y / 2});
+    vrect_setposition(c->render3d.ground, pos);
+    vrect_setcolor(c->render3d.ground, (sfColor){111.0, 75.0, 14.0, 255}, 0, true);
+    vrect_setcolor(c->render3d.ground, sfBlack, 0, false);
+    vrect_setcolor(c->render3d.ground, sfBlack, 1, false);
     c->render3d.walls = NULL;
 }
 

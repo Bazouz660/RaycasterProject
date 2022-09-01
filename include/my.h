@@ -98,10 +98,19 @@ typedef struct wall3d_s {
     struct wall3d_s *prev;
 } wall3d_t;
 
+typedef struct vrect_s {
+    sfTexture *texture;
+    sfVector2f origin;
+    sfVector2f pos;
+    sfVector2f size;
+    sfColor color;
+    sfVertex vertex[4];
+} vrect_t;
+
 typedef struct render3d_s {
     sfView *view;
-    sfRectangleShape *sky;
-    sfRectangleShape *ground;
+    vrect_t *ground;
+    vrect_t *sky;
     wall3d_t *walls;
 } render3d_t;
 
@@ -262,3 +271,12 @@ void cast_rays(core_t *c, entity_t *src);
 void add_wall(core_t *c, wall3d_t **head, ray_t ray, int fov);
 void del_wall(wall3d_t **head, wall3d_t *del_node);
 void del_walls(core_t *c);
+
+// vrect
+vrect_t *vrect_create(void);
+void vrect_draw(sfRenderWindow *render_window, vrect_t *vrect);
+void vrect_settexture(vrect_t *vrect, sfTexture *texture);
+void vrect_setposition(vrect_t *vrect, sfVector2f position);
+void vrect_setsize(vrect_t *vrect, sfVector2f size);
+void vrect_setcolor(vrect_t *vrect, sfColor color, unsigned int side,
+bool all_sides);

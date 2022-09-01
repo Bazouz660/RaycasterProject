@@ -30,10 +30,9 @@ IWHITE  = $ \x1b[47m
 
 SRC	=	src/core.c	\
 		src/screen.c	\
+		src/vertex/v_rect.c	\
 		src/projection/walls.c	\
 		src/raycasting/cast.c	\
-		src/utils/my_getnbr.c	\
-		src/utils/get_min_max.c	\
 		src/collision/level_collision.c	\
 		src/level/grid.c	\
 		src/level/load.c	\
@@ -43,6 +42,8 @@ SRC	=	src/core.c	\
 		src/entities/movement.c	\
 		src/render/draw.c	\
 		src/inits/init.c	\
+		src/utils/my_getnbr.c	\
+		src/utils/get_min_max.c	\
 		src/utils/smooth_color.c	\
 		src/utils/vectors.c	\
 		src/utils/string.c	\
