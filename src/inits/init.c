@@ -5,7 +5,7 @@
 ** init.c
 */
 
-#include "my.h"
+#include "buttons.h"
 
 void init_player(core_t *c)
 {
@@ -58,7 +58,7 @@ void init_level(core_t *c)
 
 void init_view(core_t *c)
 {
-    sfRenderWindow_setMouseCursorVisible(c->render.window, sfFalse);
+    //sfRenderWindow_setMouseCursorVisible(c->render.window, sfFalse);
     c->render.view = sfView_create();
     c->render3d.view = sfView_create();
     sfView_setSize(c->render.view, (sfVector2f){sfRenderWindow_getSize(c->render.window).x,
@@ -68,7 +68,7 @@ void init_view(core_t *c)
     sfView_setViewport(c->render.view, (sfFloatRect){0, 0, 0.3, 0.3});
     sfView_setCenter(c->render.view, sfView_getCenter(sfRenderWindow_getView(c->render.window)));
     sfView_setCenter(c->render3d.view, sfView_getCenter(c->render.view));
-    sfRenderWindow_setView(c->render.window, c->render.view);
+    sfRenderWindow_setView(c->render.window, c->render3d.view);
 }
 
 void init_render3d(core_t *c)
@@ -80,8 +80,10 @@ void init_render3d(core_t *c)
     sfRenderWindow_getSize(c->render.window).y};
 
     vrect_setcolor(c->render3d.sky, (sfColor){180, 180, 100, 255}, 0, true);
-    vrect_setcolor(c->render3d.sky, sfBlack, 2, false);
-    vrect_setcolor(c->render3d.sky, sfBlack, 3, false);
+    vrect_setcolor(c->render3d.sky, darken_color((sfColor){180, 180, 100,
+    255}, 0.3), 2, false);
+    vrect_setcolor(c->render3d.sky, darken_color((sfColor){180, 180, 100,
+    255}, 0.3), 3, false);
     vrect_setsize(c->render3d.sky, (sfVector2f){w_size.x, w_size.y / 2});
     pos = sfView_getCenter(c->render3d.view);
     pos.y -= w_size.y / 2;
@@ -90,22 +92,44 @@ void init_render3d(core_t *c)
     pos.y += w_size.y / 2;
     vrect_setsize(c->render3d.ground, (sfVector2f){w_size.x, w_size.y / 2});
     vrect_setposition(c->render3d.ground, pos);
-    vrect_setcolor(c->render3d.ground, (sfColor){111.0, 75.0, 14.0, 255}, 0, true);
-    vrect_setcolor(c->render3d.ground, sfBlack, 0, false);
-    vrect_setcolor(c->render3d.ground, sfBlack, 1, false);
+    vrect_setcolor(c->render3d.ground, (sfColor){129,92,21,255}, 0, true);
+    vrect_setcolor(c->render3d.ground, darken_color((sfColor){129,92,21,255},
+    0.1), 0, false);
+    vrect_setcolor(c->render3d.ground, darken_color((sfColor){129,92,21,255},
+    0.1), 1, false);
     c->render3d.walls = NULL;
 }
 
 void init_textures(core_t *c)
 {
-    c->textures.wall[0] = sfTexture_createFromFile("assets/walls/brick.jpg", NULL);
+    c->textures.wall[0] = sfTexture_createFromFile("assets/walls/brick.jpg",
+    NULL);
     c->textures.wall[1] = NULL;
+    c->textures.button[0] = sfTexture_createFromFile("assets/buttons/play.png",
+    NULL);
+    c->textures.button[1] = sfTexture_createFromFile("assets/buttons/exit.png",
+    NULL);
 }
 
 void init_mouse(core_t *c)
 {
-    c->mouse.pos.x = sfMouse_getPositionRenderWindow(c->render.window).x;
-    c->mouse.pos.y = sfMouse_getPositionRenderWindow(c->render.window).y;
+    c->mouse.pos = get_mouse_pos_view(c);
+    c->ui.mouse_released = true;
+}
+
+void init_buttons(core_t *c)
+{
+    c->ui.button = malloc(sizeof(button_t *) * 3);
+
+    c->ui.button[0] = button_create(c->textures.button[0],
+    (sfVector2f){400, 120}, (sfVector2f){960, 440});
+    button_set_update(c->ui.button[0]);
+    button_set_onclick(c->ui.button[0], &on_click_play);
+    c->ui.button[1] = button_create(c->textures.button[1],
+    (sfVector2f){400, 120}, (sfVector2f){960, 600});
+    button_set_update(c->ui.button[1]);
+    button_set_onclick(c->ui.button[1], &on_click_exit);
+    c->ui.button[2] = NULL;
 }
 
 void init_game(core_t *c)
@@ -113,9 +137,10 @@ void init_game(core_t *c)
     c->render.window = create_window("Backrooms");
     sfRenderWindow_setPosition(c->render.window, (sfVector2i){0, 0});
     c->clock.clock = sfClock_create();
-    c->mouse.lastpos.x = sfMouse_getPositionRenderWindow(c->render.window).x;
-    c->mouse.lastpos.y = sfMouse_getPositionRenderWindow(c->render.window).y;
+    c->mouse.lastpos = get_mouse_pos_view(c);
     c->mouse.diff = (sfVector2i){0, 0};
+    c->render.scene = 0;
+    c->clock.prev_time.microseconds = 0;
     srand(time(NULL));
     init_textures(c);
     init_view(c);
@@ -124,4 +149,5 @@ void init_game(core_t *c)
     init_level(c);
     init_player(c);
     init_render3d(c);
+    init_buttons(c);
 }

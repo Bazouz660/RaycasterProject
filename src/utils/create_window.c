@@ -18,7 +18,7 @@ sfRenderWindow *create_window(char const *title)
     settings.depthBits = 0;
     settings.majorVersion = 4.6;
     settings.minorVersion = 0;
-    settings.sRgbCapable = true;
+    settings.sRgbCapable = false;
     settings.stencilBits = 0;
     mode.bitsPerPixel = 32;
     mode.width = 1920;

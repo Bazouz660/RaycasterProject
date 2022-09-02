@@ -50,6 +50,7 @@ void draw_2d(core_t *c)
     draw_grid(c);
     draw_rays(c);
     draw_entities(c);
+    sfRenderWindow_setView(c->render.window, c->render3d.view);
 }
 
 void draw_walls(core_t *c)
@@ -75,4 +76,12 @@ void draw_all(core_t *c)
 {
     draw_3d(c);
     draw_2d(c);
+}
+
+void draw_main_menu(core_t *c)
+{
+    for (int i = 0; c->ui.button[i] != NULL; i++) {
+        sfRenderWindow_drawRectangleShape(c->render.window,
+        c->ui.button[i]->shape, NULL);
+    }
 }

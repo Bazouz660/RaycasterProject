@@ -37,12 +37,14 @@ sfBool get_mouse_intersect_view(core_t *c, sfFloatRect to_check)
         return sfFalse;
 }
 
-sfVector2f get_mouse_pos_view(core_t *c)
+sfVector2i get_mouse_pos_view(core_t *c)
 {
     sfVector2i mouse_pos0 = sfMouse_getPositionRenderWindow(c->render.window);
     sfVector2f mouse_pos;
+    sfVector2i mouse_pos_i;
 
     mouse_pos = sfRenderWindow_mapPixelToCoords(c->render.window,
     mouse_pos0, c->render.view);
-    return mouse_pos;
+    mouse_pos_i = (sfVector2i){(int)mouse_pos.x, (int)mouse_pos.y};
+    return mouse_pos0;
 }

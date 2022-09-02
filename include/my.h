@@ -29,9 +29,12 @@
 #define PI 3.14159265359
 #define DR 0.0174533
 
-#define bool int
+#define bool unsigned short
 
 #define TransparentRed (sfColor){255, 0, 0, 100}
+
+typedef struct core_s core_t;
+typedef struct button_s button_t;
 
 typedef struct intersection_s {
     float cx;
@@ -90,6 +93,17 @@ typedef struct ray_s {
     int index;
 } ray_t;
 
+typedef struct button_s {
+    int index;
+    bool visible;
+    unsigned short state;
+    sfRectangleShape *shape;
+    sfTexture *texture;
+    sfText *text;
+    void (*on_click)(core_t *, button_t *);
+    void (*update)(core_t *, button_t *);
+} button_t;
+
 typedef struct render_s {
     sfRenderWindow *window;
     sfView *view;
@@ -98,6 +112,7 @@ typedef struct render_s {
     int nb_rays;
     float render_distance;
     sfVector2i ray_pos;
+    unsigned short scene;
 } render_t;
 
 typedef struct wall3d_s {
@@ -135,6 +150,7 @@ typedef struct sounds_s {
 
 typedef struct textures_s {
     sfTexture *wall[2];
+    sfTexture *button[10];
 } textures_t;
 
 typedef struct find_files_s {
@@ -172,18 +188,24 @@ typedef struct entity_s {
     struct entity_s *prev;
 } entity_t;
 
-typedef struct core_s {
+typedef struct ui_s {
+    button_t **button;
+    bool mouse_released;
+} ui_t;
+
+struct core_s {
     render_t render;
     render3d_t render3d;
     clock_st clock;
-    sfEvent e;
+    sfEvent event;
     textures_t textures;
     mouse_t mouse;
     sounds_t sounds;
     entity_t *entities;
     level_t level;
     level_models_t *level_models;
-} core_t;
+    ui_t ui;
+};
 
 // Utils
 sfRenderWindow *create_window(char const *title);
@@ -226,6 +248,8 @@ char **strwar(const char *str, const char *separators);
 char *rm_str_char(char **str, char *to_remove);
 char *str_keep_char(char **str, char *to_keep);
 int my_getnbr(char const *str);
+sfVector2i get_mouse_pos_view(core_t *c);
+sfBool get_mouse_intersect_view(core_t *c, sfFloatRect to_check);
 
 // Inits
 void init_game(core_t *c);
@@ -289,3 +313,11 @@ void vrect_setposition(vrect_t *vrect, sfVector2f position);
 void vrect_setsize(vrect_t *vrect, sfVector2f size);
 void vrect_setcolor(vrect_t *vrect, sfColor color, unsigned int side,
 bool all_sides);
+
+// Buttons
+button_t *button_create(sfTexture *texture, sfVector2f size, sfVector2f pos);
+void button_set_onclick(button_t *button, void(*func)(core_t *, button_t *));
+void button_set_update(button_t *button);
+
+// UI
+void draw_main_menu(core_t *c);
