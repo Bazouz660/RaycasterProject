@@ -22,32 +22,24 @@ void init_fps_text(core_t *c)
     sfText_setString(c->render.fps_hint, NULL);
 }
 
-void init_level(core_t *c)
+void load_level(core_t *c, level_models_t model)
 {
     sfVector2f bpos = {32, 32};
     sfVector2f pos = bpos;
     int type = 0;
 
-    load_level_matrices(c);
-
     c->render.render_distance = 2000;
     c->level.c_size = (sfVector2f){64, 64};
-    c->level.dim.x = 30;
-    c->level.dim.y = 17;
+    c->level.dim.x = model.x;
+    c->level.dim.y = model.y;
     c->level.nb_case = (c->level.dim.x * c->level.dim.y);
     c->level.gridc = malloc(sizeof(grid_case_t **) * \
     (c->level.nb_case + 1));
     for (int i = 0; i < c->level.dim.y; i++) {
         c->level.gridc[i] = malloc(sizeof(grid_case_t *) * (c->level.dim.x + 1));
         for (int j = 0; j < c->level.dim.x; j++) {
-            if (random_number(-1, 10) > 0) {
-                type = 0;
-            } else
-                type = random_number(1, 5);
-            if (i == 0 || j == 0 || i + 1 == c->level.dim.y
-                || j + 1 == c->level.dim.x)
-                type = 1;
-            c->level.gridc[i][j] = new_grid_case(i, type, pos, c->level.c_size,
+            c->level.gridc[i][j] = new_grid_case(i, model.matrix[i][j],
+            pos, c->level.c_size,
             j, i);
             pos.x += c->level.c_size.x;
         }
@@ -56,6 +48,12 @@ void init_level(core_t *c)
         c->level.gridc[i][c->level.dim.x] = NULL;
     }
     c->level.gridc[c->level.nb_case] = NULL;
+}
+
+void init_level(core_t *c)
+{
+    load_level_matrices(c);
+    load_level(c, c->level_models[0]);
 }
 
 void init_view(core_t *c)

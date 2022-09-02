@@ -7,22 +7,8 @@
 
 #include "my.h"
 
-void rotate_point(sfVector2f center, float angle, sfVector2f *p)
-{
-    float s = sin(deg_to_rad(angle));
-    float c = cos(deg_to_rad(angle));
-    float xnew;
-    float ynew;
-
-    p->x -= center.x;
-    p->y -= center.y;
-    xnew = p->x * c - p->y * s;
-    ynew = p->x * s + p->y * c;
-    p->x = xnew + center.x;
-    p->y = ynew + center.y;
-}
-
-sfColor determine_end(core_t *c, sfVector2f start, sfVector2f dir, float maxlen, ray_t *ray)
+sfColor determine_end(core_t *c, sfVector2f start, sfVector2f dir,
+float maxlen, ray_t *ray)
 {
     float left = sfRectangleShape_getGlobalBounds(c->level.gridc[c->render.ray_pos.y][c->render.ray_pos.x]->shape).left;
     float top = sfRectangleShape_getGlobalBounds(c->level.gridc[c->render.ray_pos.y][c->render.ray_pos.x]->shape).top;
@@ -66,6 +52,7 @@ sfColor determine_end(core_t *c, sfVector2f start, sfVector2f dir, float maxlen,
         if (map.x >= 0 && map.x < c->level.dim.x && map.y >= 0 &&
             map.y < c->level.dim.y && c->level.gridc[map.y][map.x]->type > 0) {
             hit = 1;
+            ray->wall_index = (sfVector2u){map.x, map.y};
             ray->type = c->level.gridc[map.y][map.x]->type;
             color = sfRectangleShape_getFillColor(c->level.gridc[map.y][map.x]->shape);
         }
@@ -97,13 +84,17 @@ sfColor determine_end(core_t *c, sfVector2f start, sfVector2f dir, float maxlen,
 
     double wallX;
     if (side == 0)
-        wallX = r_pos.y + perpWallDist * dir.y;
+        wallX = r_pos.y + (perpWallDist * c->level.c_size.y) * dir.y;
     else
-        wallX = r_pos.x + perpWallDist * dir.x;
+        wallX = r_pos.x + (perpWallDist * c->level.c_size.x) * dir.x;
     wallX -= floor((wallX));
     ray->wall_x = wallX;
-    return color;
 
+    int texX = (int)(wallX * (double)128);
+    if(side == 0 && dir.x > 0) texX = 128 - texX - 1;
+    if(side == 1 && dir.y < 0) texX = 128 - texX - 1;
+    ray->tex_x = texX;
+    return color;
 }
 
 ray_t new_ray(core_t *c, float p_angle, sfVector2f start, float maxlen, sfVector2f refdir, float angle, int index)
@@ -112,6 +103,7 @@ ray_t new_ray(core_t *c, float p_angle, sfVector2f start, float maxlen, sfVector
     matrix_t rot_mx = new_rot_matrix(angle);
     sfVector2f dir = multiply_vec(&rot_mx, refdir);
     float c_angle;
+    ray.wall_index = (sfVector2u){0, 0};
     ray.v1.position = start;
     ray.v2.color = determine_end(c, start, dir, maxlen, &ray);
     ray.v1.color = ray.v2.color;

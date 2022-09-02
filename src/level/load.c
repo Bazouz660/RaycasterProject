@@ -85,7 +85,7 @@ char **find_files(void)
     return tf.found_files;
 }
 
-void fill_lvl_matrix(matrix_t *matrix, char *file)
+void fill_lvl_model(level_models_t *model, char *file)
 {
     file = str_keep_char(&file, "0123456789,\n");
     char **c_matrix = strwar(file, "\n");
@@ -107,19 +107,26 @@ void fill_lvl_matrix(matrix_t *matrix, char *file)
         printf("\n");
         free(tmp2);
     }
+    model->matrix = i_matrix;
+    model->x = len_x;
+    model->y = len_y;
     printf("\n");
 }
 
 int load_level_matrices(core_t *c)
 {
     char **found_files = find_files();
-    if (found_files == NULL)
-        return 0;
-    int len = get_arr_len((void const **)found_files);
+    int len;
+    if (found_files == NULL) {
+       printf("Error, no levels found in levels/ !\n");
+       exit(84);
+    }
+    len = get_arr_len((void const **)found_files);
     printf("\n\n======= found %d files =======\n", len);
-    c->lvl_matrix = malloc(sizeof(matrix_t) * (len + 1));
+    c->level_models = malloc(sizeof(level_models_t) * (len + 1));
     for (int i = 0; i < len; i++) {
-        fill_lvl_matrix(&c->lvl_matrix[i], found_files[i]);
+        fill_lvl_model(&c->level_models[i], found_files[i]);
+        c->level_models[i].index = i;
     }
     return len;
 }

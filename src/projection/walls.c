@@ -16,7 +16,7 @@ wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
     float left_pos = ((float)1920 * (float)((float)ray.index / fov));
     sfColor color;
     sfVector2u t_size = sfTexture_getSize(texture);
-    sfIntRect t_rect = {0.001 * ray.index, 0, 50, t_size.y};
+    sfIntRect t_rect = {ray.tex_x, 0, 1, t_size.y};
 
     sec->section = sfRectangleShape_create();
     if (ray.type == 0) {

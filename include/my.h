@@ -56,6 +56,13 @@ typedef struct grid_case_s {
     sfVector2f pos;
 } grid_case_t;
 
+typedef struct level_models_s {
+    int index;
+    int x;
+    int y;
+    int **matrix;
+} level_models_t;
+
 typedef struct level_s {
     sfVector2i dim;
     sfVector2f c_size;
@@ -73,9 +80,11 @@ typedef struct ofrect_s {
 typedef struct ray_s {
     sfVertex v1;
     sfVertex v2;
+    sfVector2u wall_index;
     double wall_x;
     float angle;
     float wall_dist;
+    int tex_x;
     int type;
     int side;
     int index;
@@ -173,7 +182,7 @@ typedef struct core_s {
     sounds_t sounds;
     entity_t *entities;
     level_t level;
-    matrix_t *lvl_matrix;
+    level_models_t *level_models;
 } core_t;
 
 // Utils
