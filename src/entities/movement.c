@@ -20,9 +20,11 @@ void entity_reposition(core_t *c, entity_t *entity)
         } else if (sfKeyboard_isKeyPressed(sfKeyS))
             entity->acc = vect_mult(entity->dir, -entity->acceleration);
         if (sfKeyboard_isKeyPressed(sfKeyQ))
-            entity->acc = vect_mult(vect_norm(entity->dir), -entity->acceleration);
+            entity->acc = vect_add(entity->acc, vect_mult(vect_norm(entity->dir),
+            -entity->acceleration));
         if (sfKeyboard_isKeyPressed(sfKeyD))
-            entity->acc = vect_mult(vect_norm(entity->dir), entity->acceleration);
+            entity->acc = vect_add(entity->acc, vect_mult(vect_norm(entity->dir),
+            entity->acceleration));
         if (c->mouse.diff.x > 0) {
             dampen = false;
             entity->angle_vel += (float)c->mouse.diff.x / 5000;

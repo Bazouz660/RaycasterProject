@@ -44,6 +44,7 @@ SRC	=	src/core.c	\
 		src/entities/movement.c	\
 		src/render/draw.c	\
 		src/inits/init.c	\
+		src/utils/get_text_center.c	\
 		src/utils/my_getnbr.c	\
 		src/utils/get_min_max.c	\
 		src/utils/smooth_color.c	\

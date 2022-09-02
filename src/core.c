@@ -66,14 +66,21 @@ void render_game(core_t *c)
 void update_buttons(core_t *c)
 {
     for (int i = 0; c->ui.button[i] != NULL; i++) {
-        c->ui.button[i]->update(c, c->ui.button[i]);
+        if (c->ui.button[i]->scene == c->render.scene)
+            c->ui.button[i]->update(c, c->ui.button[i]);
     }
 }
 
 void render_menu(core_t *c)
 {
-    update_buttons(c);
     draw_main_menu(c);
+    update_buttons(c);
+}
+
+void render_lvl_selec(core_t *c)
+{
+    draw_select_menu(c);
+    update_buttons(c);
 }
 
 int game_loop(void)
@@ -93,6 +100,8 @@ int game_loop(void)
             if (c->render.scene == 0)
                 render_menu(c);
             if (c->render.scene == 1)
+                render_lvl_selec(c);
+            if (c->render.scene == 2)
                 render_game(c);
             analyse_events(c);
         }

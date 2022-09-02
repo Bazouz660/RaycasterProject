@@ -78,10 +78,29 @@ void draw_all(core_t *c)
     draw_2d(c);
 }
 
-void draw_main_menu(core_t *c)
+void draw_buttons(core_t *c)
 {
     for (int i = 0; c->ui.button[i] != NULL; i++) {
-        sfRenderWindow_drawRectangleShape(c->render.window,
-        c->ui.button[i]->shape, NULL);
+        if (c->ui.button[i]->scene == c->render.scene)
+            sfRenderWindow_drawRectangleShape(c->render.window,
+            c->ui.button[i]->shape, NULL);
     }
+}
+
+void draw_background(core_t *c)
+{
+    sfRenderWindow_drawRectangleShape(c->render.window, c->ui.b1, NULL);
+}
+
+void draw_select_menu(core_t *c)
+{
+    draw_background(c);
+    draw_buttons(c);
+    sfRenderWindow_drawText(c->render.window, c->ui.level_selec_text, NULL);
+}
+
+void draw_main_menu(core_t *c)
+{
+    draw_background(c);
+    draw_buttons(c);
 }

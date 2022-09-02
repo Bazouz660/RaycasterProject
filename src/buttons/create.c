@@ -36,15 +36,16 @@ static void update(core_t *c, button_t *button)
     sfVector2u t_size = sfTexture_getSize(sfRectangleShape_getTexture(button->shape));
 
     if (sfFloatRect_contains(&bound, c->mouse.pos.x, c->mouse.pos.y)) {
-        if (button->state == 2 && c->ui.mouse_released == true)
+        if (button->state == 2 && c->ui.mouse_released == true) {
             button->on_click(c, button);
+            button->state = 0;
+        } else if (sfMouse_isButtonPressed(sfMouseLeft)) {
+            button->state = 2;
+            t_rect.left = t_size.x / 1.5;
+        }
         if (button->state == 0) {
             button->state = 1;
             t_rect.left = t_size.x / 3;
-        }
-        if (sfMouse_isButtonPressed(sfMouseLeft)) {
-            button->state = 2;
-            t_rect.left = t_size.x / 1.5;
         }
     } else if (button->state != 0) {
         button->state = 0;
@@ -56,6 +57,11 @@ static void update(core_t *c, button_t *button)
 void button_set_update(button_t *button)
 {
     button->update = &update;
+}
+
+void button_link_scene(button_t *button, unsigned short scene)
+{
+    button->scene = scene;
 }
 
 void button_set_onclick(button_t *button, void(*func)(core_t *, button_t *))

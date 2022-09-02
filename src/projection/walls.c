@@ -36,7 +36,7 @@ wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
         sfRectangleShape_setFillColor(sec->section, sfGreen);
     if (ray.type == 5)
         sfRectangleShape_setFillColor(sec->section, sfYellow);
-    sfRectangleShape_setFillColor(sec->section, (sfColor){166,142,43,255});
+    sfRectangleShape_setFillColor(sec->section, (sfColor){166 * 1.2,142 * 1.2,43 *1.2,255});
     color = sfRectangleShape_getFillColor(sec->section);
     color = darken_color(color, 300 / ray.wall_dist);
     if (ray.side == 1) {

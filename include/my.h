@@ -96,6 +96,7 @@ typedef struct ray_s {
 typedef struct button_s {
     int index;
     bool visible;
+    unsigned short scene;
     unsigned short state;
     sfRectangleShape *shape;
     sfTexture *texture;
@@ -106,10 +107,12 @@ typedef struct button_s {
 
 typedef struct render_s {
     sfRenderWindow *window;
+    sfVector2u w_size;
     sfView *view;
     sfText *fps_hint;
     ray_t *rays;
     int nb_rays;
+    int nb_levels;
     float render_distance;
     sfVector2i ray_pos;
     unsigned short scene;
@@ -151,6 +154,7 @@ typedef struct sounds_s {
 typedef struct textures_s {
     sfTexture *wall[2];
     sfTexture *button[10];
+    sfTexture *background[1];
 } textures_t;
 
 typedef struct find_files_s {
@@ -189,8 +193,12 @@ typedef struct entity_s {
 } entity_t;
 
 typedef struct ui_s {
+    sfFont *font;
     button_t **button;
+    sfText *level_selec_text;
     bool mouse_released;
+    unsigned short selected_level;
+    sfRectangleShape *b1;
 } ui_t;
 
 struct core_s {
@@ -250,6 +258,7 @@ char *str_keep_char(char **str, char *to_keep);
 int my_getnbr(char const *str);
 sfVector2i get_mouse_pos_view(core_t *c);
 sfBool get_mouse_intersect_view(core_t *c, sfFloatRect to_check);
+sfVector2f get_text_center(sfText *text);
 
 // Inits
 void init_game(core_t *c);
@@ -279,6 +288,7 @@ sfVector2f closest_point_seg(sfVector2f a, sfVector2f b, sfVector2f p);
 grid_case_t *new_grid_case(int index, int type, sfVector2f pos,
 sfVector2f size, int ix, int iy);
 int load_level_matrices(core_t *c);
+void load_level(core_t *c, level_models_t model);
 
 // Matrix
 matrix_t new_matrix(int rows, int cols);
@@ -318,6 +328,8 @@ bool all_sides);
 button_t *button_create(sfTexture *texture, sfVector2f size, sfVector2f pos);
 void button_set_onclick(button_t *button, void(*func)(core_t *, button_t *));
 void button_set_update(button_t *button);
+void button_link_scene(button_t *button, unsigned short scene);
 
 // UI
 void draw_main_menu(core_t *c);
+void draw_select_menu(core_t *c);
