@@ -153,7 +153,7 @@ typedef struct sounds_s {
 } sounds_t;
 
 typedef struct textures_s {
-    sfTexture *wall[2];
+    sfTexture **wall;
     sfTexture *button[10];
     sfTexture *background[1];
 } textures_t;

@@ -18,13 +18,13 @@ int get_step_tex_x(sfTexture *texture, ray_t *ray)
     return texX;
 }
 
-wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
+wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov, sfVector2u screen_size)
 {
     wall3d_t *sec = malloc(sizeof(*sec));
     float width = 3.2;
     float base_fov = 600;
     float height = 115000 + (45 * (base_fov - fov));
-    float left_pos = ((float)1920 * (float)((float)ray.index / fov));
+    float left_pos = ((float)screen_size.x * (float)((float)ray.index / fov));
     sfColor color;
     sfVector2u t_size = sfTexture_getSize(texture);
     sfIntRect t_rect = {get_step_tex_x(texture, &ray), 0, 1, t_size.y};
@@ -37,22 +37,11 @@ wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
     sfRectangleShape_setSize(sec->section, (sfVector2f){width, height / ray.wall_dist});
     sfRectangleShape_setOrigin(sec->section, get_rect_center(sec->section));
     sfRectangleShape_setPosition(sec->section, (sfVector2f){left_pos, view_height});
-    if (ray.type == 1)
-        sfRectangleShape_setFillColor(sec->section, sfWhite);
-    if (ray.type == 2)
-        sfRectangleShape_setFillColor(sec->section, sfCyan);
-    if (ray.type == 3)
-        sfRectangleShape_setFillColor(sec->section, sfBlue);
-    if (ray.type == 4)
-        sfRectangleShape_setFillColor(sec->section, sfGreen);
-    if (ray.type == 5)
-        sfRectangleShape_setFillColor(sec->section, sfYellow);
     sfRectangleShape_setFillColor(sec->section, (sfColor){166 * 1.2,142 * 1.2,43 *1.2,255});
     color = sfRectangleShape_getFillColor(sec->section);
     color = darken_color(color, 300 / ray.wall_dist);
-    if (ray.side == 1) {
+    if (ray.side == 1)
         color = darken_color(color, 0.6);
-    }
     sfRectangleShape_setTexture(sec->section, texture, false);
     sfRectangleShape_setTextureRect(sec->section, t_rect);
     sfRectangleShape_setFillColor(sec->section, color);
@@ -63,7 +52,8 @@ void add_wall(core_t*c, wall3d_t **head, ray_t ray, int fov)
 {
 	static int index = 0;
     int view_height = 540;
-	wall3d_t *nnode = new_section(c->textures.wall[0], ray, view_height, fov);
+	wall3d_t *nnode = new_section(c->textures.wall[ray.type - 1], ray, view_height, fov,
+    sfRenderWindow_getSize(c->render.window));
 
 	nnode->index = index;
 	nnode->next = (*head);

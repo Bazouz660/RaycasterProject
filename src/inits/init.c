@@ -102,9 +102,16 @@ void init_render3d(core_t *c)
 
 void init_textures(core_t *c)
 {
+    c->textures.wall = malloc(sizeof(sfTexture *) * (5));
     c->textures.wall[0] = sfTexture_createFromFile("assets/walls/brick.jpg",
     NULL);
-    c->textures.wall[1] = NULL;
+    c->textures.wall[1] = sfTexture_createFromFile("assets/walls/brick2.jpg",
+    NULL);
+    c->textures.wall[2] = sfTexture_createFromFile("assets/walls/door.jpg",
+    NULL);
+    c->textures.wall[3] = sfTexture_createFromFile("assets/walls/tile.jpg",
+    NULL);
+    c->textures.wall[4] = NULL;
     c->textures.button[0] = sfTexture_createFromFile("assets/buttons/play.png",
     NULL);
     c->textures.button[1] = sfTexture_createFromFile("assets/buttons/exit.png",
