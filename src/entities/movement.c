@@ -11,6 +11,8 @@ void entity_reposition(core_t *c, entity_t *entity)
 {
     float friction = 0.1;
     bool dampen = true;
+    bool dampen2 = true;
+    static float vertical_angle_vel = 0;
     matrix_t rot_mx = new_matrix(2, 2);
 
     entity->acc = (sfVector2f){0, 0};
@@ -32,6 +34,19 @@ void entity_reposition(core_t *c, entity_t *entity)
             dampen = false;
             entity->angle_vel += (float)c->mouse.diff.x / 5000;
         }
+        if (c->mouse.diff.y > 0) {
+            dampen2 = false;
+            vertical_angle_vel += (float)c->mouse.diff.y / 7000;
+        } else if (c->mouse.diff.y < 0) {
+            dampen2 = false;
+            vertical_angle_vel += (float)c->mouse.diff.y / 7000;
+        }
+        if (dampen == true)
+            vertical_angle_vel *= 0.9;
+        else
+            vertical_angle_vel *= 0.96;
+        c->render3d.vertical_angle += vertical_angle_vel;
+        c->render3d.vertical_angle = clamp(-3, 3, c->render3d.vertical_angle);
     }
     entity->acc = vect_mult(vect_unit(entity->acc), entity->acceleration / 3);
     entity->vel = vect_add(entity->vel, entity->acc);

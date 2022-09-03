@@ -75,6 +75,7 @@ void init_render3d(core_t *c)
 {
     c->render3d.sky = vrect_create();
     c->render3d.ground = vrect_create();
+    c->render3d.vertical_angle = 0.5;
     sfVector2f pos;
     sfVector2f w_size = {sfRenderWindow_getSize(c->render.window).x,
     sfRenderWindow_getSize(c->render.window).y};

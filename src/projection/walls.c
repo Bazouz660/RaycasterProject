@@ -20,13 +20,12 @@ int get_step_tex_x(sfTexture *texture, ray_t *ray)
     return texX;
 }
 
-wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov,
-sfVector2u screen_size)
+wall3d_t *new_section(core_t *c, sfTexture *texture, ray_t ray, float view_height, int fov)
 {
     wall3d_t *sec = malloc(sizeof(*sec));
     float width = get_max(1, (ray.next_pos_x - ray.pos_x));
     float height = 116000 - (300 * (fov));
-    float left_pos = (((float)ray.index / (float)screen_size.x) * (float)screen_size.x);
+    float left_pos = (((float)ray.index / (float)c->render.w_size.x) * (float)c->render.w_size.x);
     sfColor color;
     sfVector2u t_size = sfTexture_getSize(texture);
     sfIntRect t_rect = {get_step_tex_x(texture, &ray), 0, 1, t_size.y};
@@ -38,7 +37,8 @@ sfVector2u screen_size)
     }
     sfRectangleShape_setSize(sec->section, (sfVector2f){width, height / ray.wall_dist});
     sfRectangleShape_setOrigin(sec->section, get_rect_center(sec->section));
-    sfRectangleShape_setPosition(sec->section, (sfVector2f){ray.pos_x + (width / 2), view_height});
+    sfRectangleShape_setPosition(sec->section, (sfVector2f){ray.pos_x + (width / 2),
+    c->render.w_size.y - c->render3d.floor_level});
     sfRectangleShape_setFillColor(sec->section, (sfColor){166 * 1.2,142 * 1.2,43 *1.2,255});
     color = sfRectangleShape_getFillColor(sec->section);
     color = darken_color(color, 300 / ray.wall_dist);
@@ -54,8 +54,7 @@ void add_wall(core_t*c, wall3d_t **head, ray_t ray, int fov)
 {
 	static int index = 0;
     int view_height = 540;
-	wall3d_t *nnode = new_section(c->textures.wall[ray.type - 1], ray, view_height, fov,
-    sfRenderWindow_getSize(c->render.window));
+	wall3d_t *nnode = new_section(c, c->textures.wall[ray.type - 1], ray, view_height, fov);
 
 	nnode->index = index;
 	nnode->next = (*head);

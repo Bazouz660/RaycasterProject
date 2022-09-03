@@ -37,6 +37,12 @@ void update_mouse(core_t *c)
 
 void update_walls(core_t *c)
 {
+    c->render3d.floor_level = round(0.5f * c->render.w_size.x *\
+    (1 + tan(c->render3d.vertical_angle)) / tan(0.5 * c->render3d.fov));
+    c->render3d.ground->vertex[0].position.y = c->render.w_size.y - c->render3d.floor_level;
+    c->render3d.ground->vertex[1].position.y = c->render.w_size.y - c->render3d.floor_level;
+    c->render3d.sky->vertex[2].position.y = c->render.w_size.y - c->render3d.floor_level;
+    c->render3d.sky->vertex[3].position.y = c->render.w_size.y - c->render3d.floor_level;
     for (int i = 0; i < c->render.nb_rays; i++)
         add_wall(c, &c->render3d.walls, c->render.rays[i], c->render3d.fov);
 }

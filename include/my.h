@@ -143,6 +143,8 @@ typedef struct render3d_s {
     vrect_t *sky;
     wall3d_t *walls;
     int fov;
+    float vertical_angle;
+    float floor_level;
 } render3d_t;
 
 typedef struct clock_s {
@@ -263,6 +265,7 @@ int my_getnbr(char const *str);
 sfVector2i get_mouse_pos_view(core_t *c);
 sfBool get_mouse_intersect_view(core_t *c, sfFloatRect to_check);
 sfVector2f get_text_center(sfText *text);
+double clamp(double min, double max, double n);
 
 // Inits
 void init_game(core_t *c);
