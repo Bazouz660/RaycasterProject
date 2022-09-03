@@ -19,20 +19,28 @@ void on_click_exit(core_t *c, button_t *button)
 
 void on_click_next(core_t *c, button_t *button)
 {
-    if (c->ui.selected_level < c->render.nb_levels - 1)
+    if (c->ui.selected_level + 1 == c->render.nb_levels) {
+        c->ui.selected_level = 0;
+    } else if (c->ui.selected_level < c->render.nb_levels - 1)
         c->ui.selected_level++;
     sfText_setString(c->ui.level_selec_text,
     my_strcat(my_strcat(my_int_to_str(c->ui.selected_level + 1),
     " / "), my_int_to_str(c->render.nb_levels)));
+    sfText_setOrigin(c->ui.level_selec_text,
+    get_text_center(c->ui.level_selec_text));
 }
 
 void on_click_prev(core_t *c, button_t *button)
 {
-    if (c->ui.selected_level > 0)
+    if (c->ui.selected_level == 0) {
+        c->ui.selected_level = c->render.nb_levels - 1;
+    } else if (c->ui.selected_level > 0)
         c->ui.selected_level--;
     sfText_setString(c->ui.level_selec_text,
     my_strcat(my_strcat(my_int_to_str(c->ui.selected_level + 1),
     " / "), my_int_to_str(c->render.nb_levels)));
+    sfText_setOrigin(c->ui.level_selec_text,
+    get_text_center(c->ui.level_selec_text));
 }
 
 void on_click_selec_lvl(core_t *c, button_t *button)

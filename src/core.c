@@ -38,7 +38,7 @@ void update_mouse(core_t *c)
 void update_walls(core_t *c)
 {
     for (int i = 0; i < c->render.nb_rays; i++)
-        add_wall(c, &c->render3d.walls, c->render.rays[i], c->render.nb_rays);
+        add_wall(c, &c->render3d.walls, c->render.rays[i], c->render3d.fov);
 }
 
 void loop_mouse_pos(core_t *c)

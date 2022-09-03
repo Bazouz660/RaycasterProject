@@ -86,6 +86,8 @@ typedef struct ray_s {
     sfVector2u wall_index;
     sfVector2f dir;
     double wall_x;
+    float pos_x;
+    float next_pos_x;
     float angle;
     float wall_dist;
     int tex_x;
@@ -140,6 +142,7 @@ typedef struct render3d_s {
     vrect_t *ground;
     vrect_t *sky;
     wall3d_t *walls;
+    int fov;
 } render3d_t;
 
 typedef struct clock_s {

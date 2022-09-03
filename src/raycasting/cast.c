@@ -80,6 +80,21 @@ float maxlen, ray_t *ray)
         color = sfBlack;
     }
     ray->wall_dist = (perpWallDist * c->level.c_size.x);
+    float ray_direction = c->render3d.fov * (floor(0.5f * c->render.w_size.x) - ray->index) / (c->render.w_size.x - 1);
+    float ray_projection_position = 0.5f * tan(deg_to_rad(ray_direction)) / tan(deg_to_rad(0.5f * c->render3d.fov));
+    short current_column = (round(c->render.w_size.x * (0.5f - ray_projection_position)));
+
+    ray->pos_x = current_column;
+
+    ray->next_pos_x = c->render.w_size.x;
+
+    if (ray->index < c->render.w_size.x - 1) {
+        float next_ray_direction = c->render3d.fov * (floor(0.5f * \
+        c->render.w_size.x) - 1 - ray->index) / (c->render.w_size.x - 1);
+        ray_projection_position = 0.5f * tan(deg_to_rad(next_ray_direction)) / tan(deg_to_rad(0.5f * c->render3d.fov));
+        ray->next_pos_x = (round(c->render.w_size.x * (0.5f - ray_projection_position)));
+    }
+
     ray->v2.position = vect_add(start, vect_mult(dir, perpWallDist * c->level.c_size.x));
 
     double wallX;
@@ -100,10 +115,10 @@ ray_t new_ray(core_t *c, float p_angle, sfVector2f start, float maxlen, sfVector
     float c_angle;
     ray.wall_index = (sfVector2u){0, 0};
     ray.v1.position = start;
+    ray.index = index;
     ray.v2.color = determine_end(c, start, dir, maxlen, &ray);
     ray.v1.color = ray.v2.color;
     ray.angle = angle;
-    ray.index = index;
     c_angle = p_angle - angle;
     if (c_angle < 0)
         c_angle += 2 * PI;
@@ -117,11 +132,14 @@ ray_t new_ray(core_t *c, float p_angle, sfVector2f start, float maxlen, sfVector
 
 void cast_rays(core_t *c, entity_t *src)
 {
-    c->render.nb_rays = 600;
+    c->render.nb_rays = c->render.w_size.x;
+    c->render3d.fov = 70;
     c->render.rays = NULL;
     c->render.rays = malloc(sizeof(ray_t) * (c->render.nb_rays + 1));
     for (int i = 0; i < c->render.nb_rays; i++) {
-        c->render.rays[i] = new_ray(c, src->angle, src->pos, c->render.render_distance,
-        src->ref_dir, src->angle + ((DR / 10) * (i - c->render.nb_rays / 2)), i);
+        c->render.rays[i] = new_ray(c, src->angle, src->pos,
+        c->render.render_distance,
+        src->ref_dir, src->angle + (DR * (((float)(i - c->render.nb_rays / 2) \
+        / c->render.nb_rays) * (float)c->render3d.fov)), i);
     }
 }

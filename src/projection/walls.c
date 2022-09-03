@@ -12,19 +12,21 @@ int get_step_tex_x(sfTexture *texture, ray_t *ray)
     int tex_size = sfTexture_getSize(texture).x;
     int texX = (int)(ray->wall_x * (double)tex_size);
 
-    if(ray->side == 0 && ray->dir.x > 0) texX = tex_size - texX - 1;
-    if(ray->side == 1 && ray->dir.y < 0) texX = tex_size - texX - 1;
+    if(ray->side == 0 && ray->dir.x > 0)
+        texX = tex_size - texX - 1;
+    if(ray->side == 1 && ray->dir.y < 0)
+        texX = tex_size - texX - 1;
     ray->tex_x = texX;
     return texX;
 }
 
-wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov, sfVector2u screen_size)
+wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov,
+sfVector2u screen_size)
 {
     wall3d_t *sec = malloc(sizeof(*sec));
-    float width = 3.2;
-    float base_fov = 600;
-    float height = 115000 + (45 * (base_fov - fov));
-    float left_pos = ((float)screen_size.x * (float)((float)ray.index / fov));
+    float width = get_max(1, (ray.next_pos_x - ray.pos_x));
+    float height = 116000 - (300 * (fov));
+    float left_pos = (((float)ray.index / (float)screen_size.x) * (float)screen_size.x);
     sfColor color;
     sfVector2u t_size = sfTexture_getSize(texture);
     sfIntRect t_rect = {get_step_tex_x(texture, &ray), 0, 1, t_size.y};
@@ -36,7 +38,7 @@ wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov,
     }
     sfRectangleShape_setSize(sec->section, (sfVector2f){width, height / ray.wall_dist});
     sfRectangleShape_setOrigin(sec->section, get_rect_center(sec->section));
-    sfRectangleShape_setPosition(sec->section, (sfVector2f){left_pos, view_height});
+    sfRectangleShape_setPosition(sec->section, (sfVector2f){ray.pos_x + (width / 2), view_height});
     sfRectangleShape_setFillColor(sec->section, (sfColor){166 * 1.2,142 * 1.2,43 *1.2,255});
     color = sfRectangleShape_getFillColor(sec->section);
     color = darken_color(color, 300 / ray.wall_dist);
