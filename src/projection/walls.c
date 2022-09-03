@@ -7,6 +7,17 @@
 
 #include "my.h"
 
+int get_step_tex_x(sfTexture *texture, ray_t *ray)
+{
+    int tex_size = sfTexture_getSize(texture).x;
+    int texX = (int)(ray->wall_x * (double)tex_size);
+
+    if(ray->side == 0 && ray->dir.x > 0) texX = tex_size - texX - 1;
+    if(ray->side == 1 && ray->dir.y < 0) texX = tex_size - texX - 1;
+    ray->tex_x = texX;
+    return texX;
+}
+
 wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
 {
     wall3d_t *sec = malloc(sizeof(*sec));
@@ -16,7 +27,7 @@ wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
     float left_pos = ((float)1920 * (float)((float)ray.index / fov));
     sfColor color;
     sfVector2u t_size = sfTexture_getSize(texture);
-    sfIntRect t_rect = {ray.tex_x, 0, 1, t_size.y};
+    sfIntRect t_rect = {get_step_tex_x(texture, &ray), 0, 1, t_size.y};
 
     sec->section = sfRectangleShape_create();
     if (ray.type == 0) {
@@ -40,7 +51,7 @@ wall3d_t *new_section(sfTexture *texture, ray_t ray, float view_height, int fov)
     color = sfRectangleShape_getFillColor(sec->section);
     color = darken_color(color, 300 / ray.wall_dist);
     if (ray.side == 1) {
-        color = darken_color(color, 0.5);
+        color = darken_color(color, 0.6);
     }
     sfRectangleShape_setTexture(sec->section, texture, false);
     sfRectangleShape_setTextureRect(sec->section, t_rect);

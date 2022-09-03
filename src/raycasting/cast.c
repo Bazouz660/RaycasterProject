@@ -84,16 +84,11 @@ float maxlen, ray_t *ray)
 
     double wallX;
     if (side == 0)
-        wallX = r_pos.y + (perpWallDist * c->level.c_size.y) * dir.y;
+        wallX = r_pos.y + (perpWallDist) * dir.y;
     else
-        wallX = r_pos.x + (perpWallDist * c->level.c_size.x) * dir.x;
+        wallX = r_pos.x + (perpWallDist) * dir.x;
     wallX -= floor((wallX));
     ray->wall_x = wallX;
-
-    int texX = (int)(wallX * (double)128);
-    if(side == 0 && dir.x > 0) texX = 128 - texX - 1;
-    if(side == 1 && dir.y < 0) texX = 128 - texX - 1;
-    ray->tex_x = texX;
     return color;
 }
 
@@ -115,6 +110,7 @@ ray_t new_ray(core_t *c, float p_angle, sfVector2f start, float maxlen, sfVector
     if (c_angle > 2 * PI)
         c_angle -= 2 * PI;
     ray.wall_dist *= cos(c_angle);
+    ray.dir = dir;
     free_matrix(&rot_mx);
     return ray;
 }

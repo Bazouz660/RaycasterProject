@@ -81,9 +81,9 @@ void init_render3d(core_t *c)
 
     vrect_setcolor(c->render3d.sky, (sfColor){180, 180, 100, 255}, 0, true);
     vrect_setcolor(c->render3d.sky, darken_color((sfColor){180, 180, 100,
-    255}, 0.3), 2, false);
+    255}, 0.2), 2, false);
     vrect_setcolor(c->render3d.sky, darken_color((sfColor){180, 180, 100,
-    255}, 0.3), 3, false);
+    255}, 0.2), 3, false);
     vrect_setsize(c->render3d.sky, (sfVector2f){w_size.x, w_size.y / 2});
     pos = sfView_getCenter(c->render3d.view);
     pos.y -= w_size.y / 2;

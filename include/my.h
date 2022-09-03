@@ -84,6 +84,7 @@ typedef struct ray_s {
     sfVertex v1;
     sfVertex v2;
     sfVector2u wall_index;
+    sfVector2f dir;
     double wall_x;
     float angle;
     float wall_dist;
