@@ -7,7 +7,7 @@
 
 #include "my.h"
 
-entity_t *new_entity(sfVector2f pos, int id)
+entity_t *new_entity(core_t *c, sfVector2f pos, int id)
 {
 	entity_t *entity = malloc(sizeof(entity_t));
 
@@ -22,30 +22,36 @@ entity_t *new_entity(sfVector2f pos, int id)
 	entity->ref_dir = entity->dir;
 	entity->hitbox = sfRectangleShape_create();
 	entity->sprite = sfSprite_create();
-	sfSprite_setTexture(entity->sprite,
-	sfTexture_createFromFile("assets/player/2dplayer.png", NULL), true);
+	if (id == 0)
+	    sfSprite_setTexture(entity->sprite,
+	    sfTexture_createFromFile("assets/player/2dplayer.png", NULL), true);
+	if (id == 1) {
+		sfSprite_setTexture(entity->sprite, c->textures.enemy[0], false);
+	}
 	entity->base_scale = (sfVector2f){0.1, 0.1};
 	entity->scale = entity->base_scale;
 	sfSprite_setScale(entity->sprite, entity->scale);
 	sfSprite_setOrigin(entity->sprite, get_sprite_center(entity->sprite));
 	sfSprite_setPosition(entity->sprite, entity->pos);
 	sfSprite_setRotation(entity->sprite, rad_to_deg(entity->angle));
-	sfRectangleShape_setSize(entity->hitbox, (sfVector2f){30, 30});
+	sfRectangleShape_setSize(entity->hitbox, (sfVector2f){40, 40});
 	sfRectangleShape_setOrigin(entity->hitbox, get_rect_center(entity->hitbox));
 	sfRectangleShape_setFillColor(entity->hitbox, TransparentRed);
 	sfRectangleShape_setPosition(entity->hitbox, entity->pos);
 	if (id == 0) {
 		sfSprite_setColor(entity->sprite, sfBlue);
 	    entity->player = true;
-	} else
+	} else {
+		sfSprite_setColor(entity->sprite, sfRed);
 	    entity->player = false;
+	}
 	return entity;
 }
 
-void add_entity(entity_t **head, sfVector2f pos, int id)
+void add_entity(core_t *c, entity_t **head, sfVector2f pos, int id)
 {
 	static int index = 0;
-	entity_t *nnode = new_entity(pos, id);
+	entity_t *nnode = new_entity(c, pos, id);
 
 	nnode->index = index;
 	nnode->next = (*head);

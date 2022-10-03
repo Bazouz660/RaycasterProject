@@ -80,6 +80,7 @@ float maxlen, ray_t *ray)
         color = sfBlack;
     }
     ray->wall_dist = (perpWallDist * c->level.c_size.x);
+    c->render3d.depth_buffer[ray->index] = ray->wall_dist;
     float ray_direction = c->render3d.fov * (floor(0.5f * c->render.w_size.x) - ray->index) / (c->render.w_size.x - 1);
     float ray_projection_position = 0.5f * tan(deg_to_rad(ray_direction)) / tan(deg_to_rad(0.5f * c->render3d.fov));
     short current_column = (round(c->render.w_size.x * (0.5f - ray_projection_position)));
@@ -132,8 +133,6 @@ ray_t new_ray(core_t *c, float p_angle, sfVector2f start, float maxlen, sfVector
 
 void cast_rays(core_t *c, entity_t *src)
 {
-    c->render.nb_rays = c->render.w_size.x;
-    c->render3d.fov = 70;
     c->render.rays = NULL;
     c->render.rays = malloc(sizeof(ray_t) * (c->render.nb_rays + 1));
     for (int i = 0; i < c->render.nb_rays; i++) {

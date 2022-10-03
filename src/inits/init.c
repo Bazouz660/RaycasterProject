@@ -10,7 +10,8 @@
 void init_player(core_t *c)
 {
     c->entities = NULL;
-    add_entity(&c->entities, (sfVector2f){1000, 500}, 0);
+    add_entity(c, &c->entities, (sfVector2f){1000, 500}, 0);
+    c->player = c->entities;
 }
 
 void init_fps_text(core_t *c)
@@ -75,11 +76,13 @@ void init_render3d(core_t *c)
 {
     c->render3d.sky = vrect_create();
     c->render3d.ground = vrect_create();
-    c->render3d.vertical_angle = 0.5;
+    c->render3d.vertical_angle = 0;
     sfVector2f pos;
     sfVector2f w_size = {sfRenderWindow_getSize(c->render.window).x,
     sfRenderWindow_getSize(c->render.window).y};
 
+    c->render.nb_rays = c->render.w_size.x;
+    c->render3d.fov = 70;
     vrect_setcolor(c->render3d.sky, (sfColor){180, 180, 100, 255}, 0, true);
     vrect_setcolor(c->render3d.sky, darken_color((sfColor){180, 180, 100,
     255}, 0.2), 2, false);
@@ -99,6 +102,7 @@ void init_render3d(core_t *c)
     vrect_setcolor(c->render3d.ground, darken_color((sfColor){129,92,21,255},
     0.1), 1, false);
     c->render3d.walls = NULL;
+    c->render3d.depth_buffer = malloc(sizeof(float) * c->render.w_size.x);
 }
 
 void init_textures(core_t *c)
@@ -125,6 +129,7 @@ void init_textures(core_t *c)
     NULL);
     c->textures.background[0] = sfTexture_createFromFile("assets/backgrounds/main_menu.jpg",
     NULL);
+    c->textures.enemy[0] = sfTexture_createFromFile("assets/enemies/amogus.png", NULL);
 }
 
 void init_mouse(core_t *c)
@@ -196,6 +201,11 @@ void init_ui(core_t *c)
     get_text_center(c->ui.level_selec_text));
 }
 
+void init_entities(core_t *c)
+{
+    add_entity(c, &c->entities, (sfVector2f){300, 300}, 1);
+}
+
 void init_game(core_t *c)
 {
     c->render.window = create_window("Backrooms");
@@ -213,6 +223,7 @@ void init_game(core_t *c)
     init_fps_text(c);
     init_level(c);
     init_player(c);
+    init_entities(c);
     init_render3d(c);
     init_ui(c);
 }

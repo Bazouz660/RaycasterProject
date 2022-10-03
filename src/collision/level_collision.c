@@ -53,12 +53,9 @@ void check_level_collisions(core_t *c, level_t level, entity_t *entity)
                 sfRectangleShape_setFillColor(level.gridc[i][j]->shape, sfBlack);
             if (level.gridc[i][j]->type != 0 && sfFloatRect_intersects(&gcase_b,
                 &ebn, NULL)) {
-                sfSprite_setColor(entity->sprite, sfRed);
                 collision_response(entity, gcase_b, eb);
                 col = 1;
             }
         }
     }
-    if (col == 0)
-        sfSprite_setColor(entity->sprite, sfBlue);
 }

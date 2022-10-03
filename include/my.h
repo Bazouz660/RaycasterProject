@@ -142,6 +142,7 @@ typedef struct render3d_s {
     vrect_t *ground;
     vrect_t *sky;
     wall3d_t *walls;
+    float *depth_buffer;
     int fov;
     float vertical_angle;
     float floor_level;
@@ -161,6 +162,7 @@ typedef struct textures_s {
     sfTexture **wall;
     sfTexture *button[10];
     sfTexture *background[1];
+    sfTexture *enemy[1];
 } textures_t;
 
 typedef struct find_files_s {
@@ -216,6 +218,7 @@ struct core_s {
     mouse_t mouse;
     sounds_t sounds;
     entity_t *entities;
+    entity_t *player;
     level_t level;
     level_models_t *level_models;
     ui_t ui;
@@ -266,6 +269,8 @@ sfVector2i get_mouse_pos_view(core_t *c);
 sfBool get_mouse_intersect_view(core_t *c, sfFloatRect to_check);
 sfVector2f get_text_center(sfText *text);
 double clamp(double min, double max, double n);
+int get_inv_angle(double angle);
+double norm_deg(double *value, const double start, const double end);
 
 // Inits
 void init_game(core_t *c);
@@ -304,7 +309,7 @@ sfVector2f multiply_vec(matrix_t *mx, sfVector2f vec);
 void free_matrix(matrix_t *matrix);
 
 // Entities
-void add_entity(entity_t **head, sfVector2f pos, int id);
+void add_entity(core_t *c, entity_t **head, sfVector2f pos, int id);
 void entity_reposition(core_t *c, entity_t *entity);
 void update_entities(core_t *c);
 
