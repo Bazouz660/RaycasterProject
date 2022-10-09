@@ -31,7 +31,7 @@ IWHITE  = $ \x1b[47m
 SRC	=	src/core.c	\
 		src/screen.c	\
 		src/buttons/create.c	\
-		src/buttons/functions.c	\
+		src/buttons/actions.c	\
 		src/vertex/v_rect.c	\
 		src/projection/walls.c	\
 		src/raycasting/cast.c	\

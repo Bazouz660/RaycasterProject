@@ -81,19 +81,19 @@ float maxlen, ray_t *ray)
     }
     ray->wall_dist = (perpWallDist * c->level.c_size.x);
     c->render3d.depth_buffer[ray->index] = ray->wall_dist;
-    float ray_direction = c->render3d.fov * (floor(0.5f * c->render.w_size.x) - ray->index) / (c->render.w_size.x - 1);
+    float ray_direction = c->render3d.fov * (floor(0.5f * c->render.r_size.x) - ray->index) / (c->render.r_size.x - 1);
     float ray_projection_position = 0.5f * tan(deg_to_rad(ray_direction)) / tan(deg_to_rad(0.5f * c->render3d.fov));
-    short current_column = (round(c->render.w_size.x * (0.5f - ray_projection_position)));
+    short current_column = (round(c->render.r_size.x * (0.5f - ray_projection_position)));
 
     ray->pos_x = current_column;
 
-    ray->next_pos_x = c->render.w_size.x;
+    ray->next_pos_x = c->render.r_size.x;
 
-    if (ray->index < c->render.w_size.x - 1) {
+    if (ray->index < c->render.r_size.x - 1) {
         float next_ray_direction = c->render3d.fov * (floor(0.5f * \
-        c->render.w_size.x) - 1 - ray->index) / (c->render.w_size.x - 1);
+        c->render.r_size.x) - 1 - ray->index) / (c->render.r_size.x - 1);
         ray_projection_position = 0.5f * tan(deg_to_rad(next_ray_direction)) / tan(deg_to_rad(0.5f * c->render3d.fov));
-        ray->next_pos_x = (round(c->render.w_size.x * (0.5f - ray_projection_position)));
+        ray->next_pos_x = (round(c->render.r_size.x * (0.5f - ray_projection_position)));
     }
 
     ray->v2.position = vect_add(start, vect_mult(dir, perpWallDist * c->level.c_size.x));
@@ -114,12 +114,14 @@ ray_t new_ray(core_t *c, float p_angle, sfVector2f start, float maxlen, sfVector
     matrix_t rot_mx = new_rot_matrix(angle);
     sfVector2f dir = multiply_vec(&rot_mx, refdir);
     float c_angle;
+
     ray.wall_index = (sfVector2u){0, 0};
     ray.v1.position = start;
     ray.index = index;
     ray.v2.color = determine_end(c, start, dir, maxlen, &ray);
     ray.v1.color = ray.v2.color;
     ray.angle = angle;
+    //printf("pangle = %f\n", p_angle);
     c_angle = p_angle - angle;
     if (c_angle < 0)
         c_angle += 2 * PI;

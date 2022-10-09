@@ -26,6 +26,9 @@
 #define true True
 #define false False
 
+#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 1920
+
 #define PI 3.14159265359
 #define DR 0.0174533
 
@@ -110,6 +113,7 @@ typedef struct button_s {
 
 typedef struct render_s {
     sfRenderWindow *window;
+    sfVector2u r_size;
     sfVector2u w_size;
     sfView *view;
     sfText *fps_hint;
@@ -139,9 +143,12 @@ typedef struct vrect_s {
 
 typedef struct render3d_s {
     sfView *view;
+    sfRenderTexture *rs_render;
+    sfRectangleShape *fs_renderer;
     vrect_t *ground;
     vrect_t *sky;
     wall3d_t *walls;
+    float bobbing_clock;
     float *depth_buffer;
     int fov;
     float vertical_angle;
@@ -190,17 +197,21 @@ typedef struct entity_s {
     sfVector2f scale;
     sfVector2f dir;
     sfVector2f ref_dir;
+    sfVector2f screen_pos;
     sfSprite *sprite;
     sfRectangleShape *hitbox;
     float angle;
     float angle_vel;
     float acceleration;
+    float sprint_speed;
+    float pdistance;
     bool player;
     struct entity_s *next;
     struct entity_s *prev;
 } entity_t;
 
 typedef struct ui_s {
+    sfView *view;
     sfFont *font;
     button_t **button;
     sfText *level_selec_text;
@@ -225,7 +236,7 @@ struct core_s {
 };
 
 // Utils
-sfRenderWindow *create_window(char const *title);
+sfRenderWindow *create_window(sfVector2u size, char const *title);
 sfSprite *new_sprite(char *texture_name, float x, float y);
 sfSound *new_sound(sfSound *new_sound, const char *buffer_location);
 void init_animated_sprite(sfSprite *sprite, int columns, int rows);
@@ -270,6 +281,7 @@ sfBool get_mouse_intersect_view(core_t *c, sfFloatRect to_check);
 sfVector2f get_text_center(sfText *text);
 double clamp(double min, double max, double n);
 int get_inv_angle(double angle);
+void close_game(core_t *c);
 double norm_deg(double *value, const double start, const double end);
 
 // Inits
@@ -329,7 +341,7 @@ void del_walls(core_t *c);
 
 // vrect
 vrect_t *vrect_create(void);
-void vrect_draw(sfRenderWindow *render_window, vrect_t *vrect);
+void vrect_draw(sfRenderWindow *render_window, sfRenderTexture *render_texture, vrect_t *vrect);
 void vrect_settexture(vrect_t *vrect, sfTexture *texture);
 void vrect_setposition(vrect_t *vrect, sfVector2f position);
 void vrect_setsize(vrect_t *vrect, sfVector2f size);

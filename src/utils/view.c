@@ -22,16 +22,16 @@ sfFloatRect view_bounds(sfView *view)
 
 sfBool get_mouse_intersect_view(core_t *c, sfFloatRect to_check)
 {
-    sfVector2i mouse_pos0 = sfMouse_getPositionRenderWindow(c->render.window);
-    sfVector2f mouse_pos = {mouse_pos0.x + view_bounds(c->render.view).left,
-    mouse_pos0.y + view_bounds(c->render.view).top};
-    int posX = to_check.left;
-    int posY = to_check.top;
+    sfVector2i mouse_pos = get_mouse_pos_view(c);
     int posX_offset = to_check.left + to_check.width;
     int posY_offset = to_check.top + to_check.height;
+    sfVector2i pos = sfRenderWindow_mapCoordsToPixel(c->render.window,
+    (sfVector2f){to_check.left, to_check.top}, sfRenderWindow_getView(c->render.window));
+    sfVector2i pos_offset = sfRenderWindow_mapCoordsToPixel(c->render.window,
+    (sfVector2f){posX_offset, posY_offset}, sfRenderWindow_getView(c->render.window));
 
-    if ((mouse_pos.x >= posX && mouse_pos.x <= posX_offset)
-        && (mouse_pos.y >= posY && mouse_pos.y <= posY_offset))
+    if ((mouse_pos.x >= pos.x && mouse_pos.x <= pos_offset.x)
+        && (mouse_pos.y >= pos.y && mouse_pos.y <= pos_offset.y))
         return sfTrue;
     else
         return sfFalse;
@@ -40,6 +40,9 @@ sfBool get_mouse_intersect_view(core_t *c, sfFloatRect to_check)
 sfVector2i get_mouse_pos_view(core_t *c)
 {
     sfVector2i mouse_pos0 = sfMouse_getPositionRenderWindow(c->render.window);
+    sfVector2f mouse_pos;
 
+    mouse_pos = sfRenderWindow_mapPixelToCoords(c->render.window,
+    mouse_pos0, c->render.view);
     return mouse_pos0;
 }

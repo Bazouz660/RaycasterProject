@@ -18,6 +18,9 @@ entity_t *new_entity(core_t *c, sfVector2f pos, int id)
 	entity->acceleration = 1;
 	entity->acc = entity->vel;
 	entity->angle_vel = 0;
+	entity->sprint_speed = 1;
+	entity->pdistance = 0;
+	entity->screen_pos = (sfVector2f){0, 0};
 	entity->dir = (sfVector2f){1, 0};
 	entity->ref_dir = entity->dir;
 	entity->hitbox = sfRectangleShape_create();

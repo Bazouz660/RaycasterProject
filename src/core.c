@@ -7,6 +7,15 @@
 
 #include "my.h"
 
+void close_game(core_t *c)
+{
+    //sfRenderWindow_close(c->render.window);
+    //c->render.window = sfRenderWindow_create(sfVideoMode_getFullscreenModes(NULL)[0], "Closing", sfResize | sfClose,
+    //NULL);
+    //sfRenderWindow_display(c->render.window);
+    sfRenderWindow_close(c->render.window);
+}
+
 void analyse_events(core_t *c)
 {
     int mouse_released = 0;
@@ -15,7 +24,7 @@ void analyse_events(core_t *c)
         if (c->event.type == sfEvtMouseButtonReleased)
             mouse_released += 1;
         if (c->event.type == sfEvtClosed)
-            sfRenderWindow_close(c->render.window);
+            close_game(c);
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) {
             c->render.scene = 0;
             sfRenderWindow_setMouseCursorVisible(c->render.window, true);
@@ -43,15 +52,15 @@ void update_walls(core_t *c)
         add_wall(c, &c->render3d.walls, c->render.rays[i], c->render3d.fov);
 }
 
-void loop_mouse_pos(core_t *c)
+void horiz_mouse_scroll(core_t *c)
 {
-    if (c->mouse.pos.x >= sfRenderWindow_getSize(c->render.window).x - 1) {
-        c->mouse.pos.x = 1;
-        c->mouse.lastpos.x = 1;
+    if (c->mouse.pos.x >= c->render.w_size.x - 1) {
+        c->mouse.pos.x = 2;
+        c->mouse.lastpos.x = 2;
         sfMouse_setPositionRenderWindow(c->mouse.pos, c->render.window);
     }
-    if (c->mouse.pos.x - 1 < 0) {
-        c->mouse.pos.x = sfRenderWindow_getSize(c->render.window).x;
+    if (c->mouse.pos.x - 1 <= 0) {
+        c->mouse.pos.x = c->render.w_size.x - 2;
         c->mouse.lastpos.x = c->mouse.pos.x;
         sfMouse_setPositionRenderWindow(c->mouse.pos, c->render.window);
     }
@@ -59,7 +68,7 @@ void loop_mouse_pos(core_t *c)
 
 void render_game(core_t *c)
 {
-    loop_mouse_pos(c);
+    horiz_mouse_scroll(c);
     update_entities(c);
     update_walls(c);
     draw_all(c);
@@ -88,26 +97,24 @@ void render_lvl_selec(core_t *c)
 int game_loop(void)
 {
     core_t *c = malloc(sizeof(core_t));
-    float clock = 0;
 
     init_game(c);
     sfRenderWindow_setVerticalSyncEnabled(c->render.window, True);
+    //sfRenderWindow_setFramerateLimit(c->render.window, 150);
     while (sfRenderWindow_isOpen(c->render.window)) {
         update_clock(c);
-        if (c->clock.seconds > clock + 0.016) {
-            clock = c->clock.seconds;
-            update_fps(c);
-            update_screen(c);
-            update_mouse(c);
-            if (c->render.scene == 0)
-                render_menu(c);
-            if (c->render.scene == 1)
-                render_lvl_selec(c);
-            if (c->render.scene == 2)
-                render_game(c);
-            analyse_events(c);
-        }
+        update_fps(c);
+        update_screen(c);
+        update_mouse(c);
+        if (c->render.scene == 0)
+            render_menu(c);
+        if (c->render.scene == 1)
+            render_lvl_selec(c);
+        if (c->render.scene == 2)
+            render_game(c);
+        analyse_events(c);
     }
+    return 0;
 }
 
 int main(int ac, char **av)

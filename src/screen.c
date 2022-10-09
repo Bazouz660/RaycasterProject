@@ -23,7 +23,6 @@ void update_fps(core_t *c)
         clock = c->clock.seconds;
         sfText_setString(c->render.fps_hint, my_int_to_str((int)fps));
     }
-    sfRenderWindow_drawText(c->render.window, c->render.fps_hint, NULL);
 }
 
 void update_screen(core_t *c)

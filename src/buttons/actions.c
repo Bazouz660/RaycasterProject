@@ -14,6 +14,7 @@ void on_click_play(core_t *c, button_t *button)
 
 void on_click_exit(core_t *c, button_t *button)
 {
+    close_game(c);
     exit(0);
 }
 

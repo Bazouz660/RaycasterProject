@@ -7,11 +7,24 @@
 
 #include "my.h"
 
-sfRenderWindow *create_window(char const *title)
+sfRenderWindow *create_window(sfVector2u size, char const *title)
 {
-    sfRenderWindow *Window;
+    sfRenderWindow *window;
     sfVideoMode mode = sfVideoMode_getDesktopMode();
     sfContextSettings settings;
+
+    ssize_t count = 0;
+
+    const sfVideoMode *a_modes = sfVideoMode_getFullscreenModes(&count);
+
+    for (int i = 0; i < count; i++) {
+        printf("fullscreen mode %d :\n", i);
+        printf("mode.width = %d, mode.height = %d\n", a_modes[i].width, a_modes[i].height);
+        if (sfVideoMode_isValid(a_modes[i]))
+            printf("is mode valid : true\n\n");
+        else
+            printf("is mode valid : false\n\n");
+    }
 
     settings.antialiasingLevel = 8;
     settings.attributeFlags = 0;
@@ -20,10 +33,9 @@ sfRenderWindow *create_window(char const *title)
     settings.minorVersion = 0;
     settings.sRgbCapable = false;
     settings.stencilBits = 0;
-    mode.bitsPerPixel = 32;
-    mode.width = 1920;
-    mode.height = 1080;
-    Window = sfRenderWindow_create(mode, title, sfFullscreen | sfClose,
+    mode.width = size.x;
+    mode.height = size.y;
+    window = sfRenderWindow_create(mode, title, sfFullscreen | sfResize | sfClose,
     &settings);
-    return Window;
+    return window;
 }

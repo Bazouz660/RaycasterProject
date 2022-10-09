@@ -35,7 +35,7 @@ static void update(core_t *c, button_t *button)
     sfIntRect t_rect = sfRectangleShape_getTextureRect(button->shape);
     sfVector2u t_size = sfTexture_getSize(sfRectangleShape_getTexture(button->shape));
 
-    if (sfFloatRect_contains(&bound, c->mouse.pos.x, c->mouse.pos.y)) {
+    if (get_mouse_intersect_view(c, bound)) {
         if (button->state == 2 && c->ui.mouse_released == true) {
             button->on_click(c, button);
             button->state = 0;

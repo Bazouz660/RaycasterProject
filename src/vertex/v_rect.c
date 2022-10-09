@@ -54,16 +54,22 @@ void vrect_settexture(vrect_t *vrect, sfTexture *texture)
     vrect->vertex[3].texCoords = (sfVector2f){0, t_size.y};
 }
 
-void vrect_draw(sfRenderWindow *render_window, vrect_t *vrect)
+// Choose between render texture or render window by setting one of them null
+void vrect_draw(sfRenderWindow *render_window, sfRenderTexture *render_texture, vrect_t *vrect)
 {
     sfRenderStates render_states;
+
 
     render_states.blendMode = sfBlendAlpha;
     render_states.shader = NULL;
     render_states.transform = sfTransform_Identity;
     render_states.texture = vrect->texture;
-    sfRenderWindow_drawPrimitives(render_window, vrect->vertex, 4,
-    sfQuads, &render_states);
+    if (render_window != NULL)
+        sfRenderWindow_drawPrimitives(render_window, vrect->vertex, 4,
+        sfQuads, &render_states);
+    if (render_texture != NULL)
+        sfRenderTexture_drawPrimitives(render_texture, vrect->vertex, 4,
+        sfQuads, &render_states);
 }
 
 void vrect_setcolor(vrect_t *vrect, sfColor color, unsigned int side,
