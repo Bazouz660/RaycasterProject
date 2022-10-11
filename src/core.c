@@ -5,14 +5,19 @@
 ** core.c
 */
 
-#include "my.h"
+#include "includes.h"
+#include "structs.h"
+#include "prototypes.h"
+#include "defines.h"
+
+void free_all(core_t *c)
+{
+    
+}
 
 void close_game(core_t *c)
 {
-    //sfRenderWindow_close(c->render.window);
-    //c->render.window = sfRenderWindow_create(sfVideoMode_getFullscreenModes(NULL)[0], "Closing", sfResize | sfClose,
-    //NULL);
-    //sfRenderWindow_display(c->render.window);
+    free_all(c);
     sfRenderWindow_close(c->render.window);
 }
 
@@ -99,7 +104,7 @@ int game_loop(void)
     core_t *c = malloc(sizeof(core_t));
 
     init_game(c);
-    sfRenderWindow_setVerticalSyncEnabled(c->render.window, True);
+    //sfRenderWindow_setVerticalSyncEnabled(c->render.window, True);
     //sfRenderWindow_setFramerateLimit(c->render.window, 150);
     while (sfRenderWindow_isOpen(c->render.window)) {
         update_clock(c);

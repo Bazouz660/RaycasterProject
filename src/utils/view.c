@@ -5,7 +5,8 @@
 ** view.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 sfFloatRect view_bounds(sfView *view)
 {

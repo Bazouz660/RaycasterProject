@@ -5,7 +5,7 @@
 ** smooth_color.c
 */
 
-#include "my.h"
+#include "structs.h"
 
 sfColor smooth_color(sfColor c1, sfColor c2, double prog)
 {

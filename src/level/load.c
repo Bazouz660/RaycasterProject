@@ -5,7 +5,8 @@
 ** load.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 char *read_file(char *location)
 {

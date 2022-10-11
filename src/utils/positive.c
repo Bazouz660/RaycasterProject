@@ -5,8 +5,6 @@
 ** positive.c
 */
 
-#include "my.h"
-
 int positive(int nb)
 {
     if (nb < 0)

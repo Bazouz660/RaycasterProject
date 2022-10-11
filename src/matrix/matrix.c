@@ -5,7 +5,7 @@
 ** matrix.c
 */
 
-#include "my.h"
+#include "structs.h"
 
 matrix_t new_matrix(int rows, int cols)
 {
@@ -45,7 +45,6 @@ matrix_t new_rot_matrix(float angle)
 
 void free_matrix(matrix_t *matrix)
 {
-    for (int i = 0; i < matrix->rows; i++) {
+    for (int i = 0; i < matrix->rows; i++)
         free(matrix->data[i]);
-    }
 }

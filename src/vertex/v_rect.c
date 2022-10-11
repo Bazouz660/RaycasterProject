@@ -5,7 +5,8 @@
 ** v_rect.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 vrect_t *vrect_create(void)
 {

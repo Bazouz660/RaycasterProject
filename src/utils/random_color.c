@@ -5,7 +5,8 @@
 ** random_color.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 sfColor random_color(void)
 {

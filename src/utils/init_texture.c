@@ -5,7 +5,7 @@
 ** init_texture.c
 */
 
-#include "my.h"
+#include "structs.h"
 
 void init_animated_sprite(sfSprite *sprite, int columns, int rows)
 {

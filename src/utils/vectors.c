@@ -5,7 +5,28 @@
 ** vectors.c
 */
 
-#include "my.h"
+#include "includes.h"
+#include "prototypes.h"
+
+sfVector2f v2u_to_v2f(sfVector2u vector)
+{
+    return ((sfVector2f){vector.x, vector.y});
+}
+
+sfVector2u v2f_to_v2u(sfVector2f vector)
+{
+    return ((sfVector2u){vector.x, vector.y});
+}
+
+sfVector2i v2f_to_v2i(sfVector2f vector)
+{
+    return ((sfVector2i){vector.x, vector.y});
+}
+
+sfVector2f v2i_to_v2f(sfVector2i vector)
+{
+    return ((sfVector2f){vector.x, vector.y});
+}
 
 sfVector2f vect_add(sfVector2f v1, sfVector2f v2)
 {

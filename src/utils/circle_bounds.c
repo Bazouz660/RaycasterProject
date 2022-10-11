@@ -5,7 +5,9 @@
 ** circle_bounds.c
 */
 
-#include "my.h"
+#include "includes.h"
+#include "structs.h"
+#include "prototypes.h"
 
 sfBool circle_intersect(sfVector2f center, float radius, sfVector2f point)
 {

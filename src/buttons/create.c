@@ -5,7 +5,9 @@
 ** create.c
 */
 
-#include "my.h"
+#include "includes.h"
+#include "structs.h"
+#include "prototypes.h"
 
 button_t *button_create(sfTexture *texture, sfVector2f size, sfVector2f pos)
 {

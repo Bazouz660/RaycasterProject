@@ -5,7 +5,8 @@
 ** grid.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 grid_case_t *new_grid_case(int index, int type, sfVector2f pos,
 sfVector2f size, int ix, int iy)

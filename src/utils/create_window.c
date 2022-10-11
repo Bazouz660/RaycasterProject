@@ -5,7 +5,9 @@
 ** create_window.c
 */
 
-#include "my.h"
+#include "includes.h"
+#include "structs.h"
+#include "prototypes.h"
 
 sfRenderWindow *create_window(sfVector2u size, char const *title)
 {
@@ -35,7 +37,7 @@ sfRenderWindow *create_window(sfVector2u size, char const *title)
     settings.stencilBits = 0;
     mode.width = size.x;
     mode.height = size.y;
-    window = sfRenderWindow_create(mode, title, sfFullscreen | sfResize | sfClose,
+    window = sfRenderWindow_create(mode, title, sfResize | sfClose,
     &settings);
     return window;
 }

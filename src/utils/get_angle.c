@@ -5,7 +5,9 @@
 ** get_angle.c
 */
 
-#include "my.h"
+#include "includes.h"
+#include "structs.h"
+#include "prototypes.h"
 
 double rad_to_deg(double angle)
 {

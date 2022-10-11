@@ -5,7 +5,7 @@
 ** set_sprite_pos.c
 */
 
-#include "my.h"
+#include "structs.h"
 
 sfSprite *setSprite_pos(sfSprite *sprite, float posX, float posY)
 {

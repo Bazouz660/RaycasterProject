@@ -5,7 +5,7 @@
 ** init_frect.c
 */
 
-#include "my.h"
+#include "structs.h"
 
 sfFloatRect init_frect(float left, float top, float width, float height)
 {

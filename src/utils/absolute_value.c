@@ -5,8 +5,6 @@
 ** absolute.c
 */
 
-#include "my.h"
-
 double absolute(double value)
 {
     if (value < 0)

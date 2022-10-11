@@ -5,7 +5,8 @@
 ** walls.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 double get_step_tex_x(sfTexture *texture, ray_t *ray)
 {

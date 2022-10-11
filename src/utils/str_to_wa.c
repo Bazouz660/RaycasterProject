@@ -5,7 +5,8 @@
 ** str_to_wa.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 short is_separator(char const c, char const *separators)
 {

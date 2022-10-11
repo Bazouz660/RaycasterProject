@@ -5,7 +5,8 @@
 ** new_sound.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 sfSound *set_up_new_sound(sfSound *new_sound, const char *buffer_location)
 {

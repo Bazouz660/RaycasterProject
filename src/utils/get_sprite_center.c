@@ -5,7 +5,7 @@
 ** get_sprite_center.c
 */
 
-#include "my.h"
+#include "structs.h"
 
 sfVector2f get_sprite_center(sfSprite *sprite)
 {

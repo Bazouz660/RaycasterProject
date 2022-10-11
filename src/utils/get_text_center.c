@@ -5,7 +5,7 @@
 ** get_text_center.c
 */
 
-#include "my.h"
+#include "structs.h"
 
 sfVector2f get_text_center(sfText *text)
 {

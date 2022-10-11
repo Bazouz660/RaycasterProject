@@ -5,7 +5,7 @@
 ** new_sprite.c
 */
 
-#include "my.h"
+#include "structs.h"
 
 sfSprite *new_sprite(char *texture_name, float x, float y)
 {

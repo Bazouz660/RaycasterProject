@@ -5,7 +5,8 @@
 ** update.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 int my_list_size(entity_t const *begin)
 {
@@ -36,7 +37,7 @@ entity_t *alpha_comp(entity_t *elem1, entity_t *elem2, int *change)
     return (elem1);
 }
 
-entity_t *sort_linked_list(entity_t **linked_files,
+entity_t *sort_sprites(entity_t **linked_files,
 entity_t *(*cmp)())
 {
     int change = 0;
@@ -52,7 +53,7 @@ entity_t *(*cmp)())
         }
     if (change == 0)
         return (*linked_files);
-    return (sort_linked_list(linked_files, &(*cmp)));
+    return (sort_sprites(linked_files, &(*cmp)));
 }
 
 void update_entities(core_t *c)
@@ -65,5 +66,5 @@ void update_entities(core_t *c)
             cast_rays(c, tmp);
         tmp = tmp->next;
     }
-    sort_linked_list(&c->entities, &alpha_comp);
+    sort_sprites(&c->entities, &alpha_comp);
 }

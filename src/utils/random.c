@@ -5,7 +5,8 @@
 ** random.c
 */
 
-#include "my.h"
+#include "includes.h"
+#include "prototypes.h"
 
 int random_number(int min_num, int max_num)
 {

@@ -5,11 +5,11 @@
 ** clamp.c
 */
 
-double clamp(double min, double max, double n)
+double clamp(double min, double max, double value)
 {
-    if (n > max)
+    if (value > max)
         return max;
-    if (n < min)
+    if (value < min)
         return min;
-    return n;
+    return value;
 }

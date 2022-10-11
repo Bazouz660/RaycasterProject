@@ -6,6 +6,8 @@
 */
 
 #include "buttons.h"
+#include "structs.h"
+#include "prototypes.h"
 
 void init_player(core_t *c)
 {
@@ -23,7 +25,9 @@ void init_fps_text(core_t *c)
     sfText_setPosition(c->render.fps_hint, (sfVector2f){c->render.w_size.x / 30.0,
     c->render.w_size.y / 25.0});
     sfText_setString(c->render.fps_hint, NULL);
-    sfText_setCharacterSize(c->render.fps_hint, c->render.w_size.x / 30);
+    sfText_setOutlineColor(c->render.fps_hint, sfBlack);
+    sfText_setOutlineThickness(c->render.fps_hint, 1);
+    sfText_setCharacterSize(c->render.fps_hint, c->render.w_size.x / 40);
 }
 
 void load_level(core_t *c, level_models_t model)
@@ -75,6 +79,25 @@ void init_view(core_t *c)
     sfRenderWindow_setView(c->render.window, c->render3d.view);
 }
 
+void init_screen_buffer(core_t *c, sfVector2u rs)
+{
+    int b_size = rs.x * rs.y;
+    int w = 0;
+    sfVector2u pos = {0, 0};
+
+    c->render3d.buffer = sfVertexBuffer_create(b_size, sfPoints, sfVertexBufferStream);
+    c->render3d.fc_buffer = malloc(sizeof(sfVertex *) * (rs.x + 1));
+    for (int i = 0; i < rs.x; i++, w++) {
+        c->render3d.fc_buffer[i] = malloc(sizeof(sfVertex) * (rs.y + 1));
+        for (int j = 0; j < rs.y; j++, w++) {
+            c->render3d.fc_buffer[i][j].position = (sfVector2f){i, j};
+            c->render3d.fc_buffer[i][j].color = random_color();
+        }
+        sfVertexBuffer_update(c->render3d.buffer, c->render3d.fc_buffer[i], rs.y, rs.y * i);
+    }
+
+}
+
 void init_render3d(core_t *c)
 {
     c->render3d.sky = vrect_create();
@@ -89,6 +112,7 @@ void init_render3d(core_t *c)
     sfRectangleShape_setSize(c->render3d.fs_renderer, (sfVector2f){c->render.w_size.x, c->render.w_size.y});
     sfRectangleShape_setOrigin(c->render3d.fs_renderer, get_rect_center(c->render3d.fs_renderer));
     sfRectangleShape_setPosition(c->render3d.fs_renderer, sfView_getCenter(c->render3d.view));
+    init_screen_buffer(c, rs);
 
     c->render.nb_rays = c->render.r_size.x;
     c->render3d.fov = 70;
@@ -116,28 +140,19 @@ void init_render3d(core_t *c)
 void init_textures(core_t *c)
 {
     c->textures.wall = malloc(sizeof(sfTexture *) * (5));
-    c->textures.wall[0] = sfTexture_createFromFile("assets/walls/brick.jpg",
-    NULL);
-    c->textures.wall[1] = sfTexture_createFromFile("assets/walls/brick2.jpg",
-    NULL);
-    c->textures.wall[2] = sfTexture_createFromFile("assets/walls/door.jpg",
-    NULL);
-    c->textures.wall[3] = sfTexture_createFromFile("assets/walls/tile.jpg",
-    NULL);
+    c->textures.wall[0] = new_texture("assets/walls/brick.jpg", NULL);
+    c->textures.wall[1] = new_texture("assets/walls/brick2.jpg", NULL);
+    c->textures.wall[2] = new_texture("assets/walls/door.jpg", NULL);
+    c->textures.wall[3] = new_texture("assets/walls/tile.jpg", NULL);
     c->textures.wall[4] = NULL;
-    c->textures.button[0] = sfTexture_createFromFile("assets/buttons/play.png",
+    c->textures.button[0] = new_texture("assets/buttons/play.png", NULL);
+    c->textures.button[1] = new_texture("assets/buttons/exit.png", NULL);
+    c->textures.button[2] = new_texture("assets/buttons/lvl_select.png", NULL);
+    c->textures.button[3] = new_texture("assets/buttons/next.png", NULL);
+    c->textures.button[4] = new_texture("assets/buttons/prev.png", NULL);
+    c->textures.background[0] = new_texture("assets/backgrounds/main_menu.jpg",
     NULL);
-    c->textures.button[1] = sfTexture_createFromFile("assets/buttons/exit.png",
-    NULL);
-    c->textures.button[2] = sfTexture_createFromFile("assets/buttons/lvl_select.png",
-    NULL);
-    c->textures.button[3] = sfTexture_createFromFile("assets/buttons/next.png",
-    NULL);
-    c->textures.button[4] = sfTexture_createFromFile("assets/buttons/prev.png",
-    NULL);
-    c->textures.background[0] = sfTexture_createFromFile("assets/backgrounds/main_menu.jpg",
-    NULL);
-    c->textures.enemy[0] = sfTexture_createFromFile("assets/enemies/amogus.png", NULL);
+    c->textures.enemy[0] = new_texture("assets/enemies/amogus.png", NULL);
 }
 
 void init_mouse(core_t *c)
@@ -222,7 +237,7 @@ void init_ui(core_t *c)
 void init_entities(core_t *c)
 {
     add_entity(c, &c->entities, (sfVector2f){300, 300}, 1);
-    add_entity(c, &c->entities, (sfVector2f){300, 400}, 1);
+    //add_entity(c, &c->entities, (sfVector2f){300, 400}, 1);
 }
 
 void init_game(core_t *c)
@@ -236,6 +251,7 @@ void init_game(core_t *c)
     c->mouse.diff = (sfVector2i){0, 0};
     c->render.scene = 0;
     c->clock.prev_time.microseconds = 0;
+    c->clock.frame_delta = 0;
     srand(time(NULL));
     init_textures(c);
     init_view(c);

@@ -5,7 +5,9 @@
 ** fps.c
 */
 
-#include "my.h"
+#include "includes.h"
+#include "structs.h"
+#include "prototypes.h"
 
 float time_as_sec(sfTime time)
 {

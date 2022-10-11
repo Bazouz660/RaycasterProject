@@ -34,7 +34,8 @@ SRC	=	src/core.c	\
 		src/buttons/actions.c	\
 		src/vertex/v_rect.c	\
 		src/projection/walls.c	\
-		src/raycasting/cast.c	\
+		src/raycasting/floor_cast.c	\
+		src/raycasting/wall_cast.c	\
 		src/collision/level_collision.c	\
 		src/level/grid.c	\
 		src/level/load.c	\
@@ -42,13 +43,18 @@ SRC	=	src/core.c	\
 		src/entities/update.c	\
 		src/entities/creation.c	\
 		src/entities/movement.c	\
+		src/entities/linked_list.c	\
+		src/entities/pathfinding.c	\
 		src/render/draw.c	\
+		src/render/draw_entity3d.c	\
+		src/render/bobbing.c	\
 		src/inits/init.c	\
 		src/utils/random_color.c	\
 		src/utils/clamp.c	\
 		src/utils/get_text_center.c	\
 		src/utils/my_getnbr.c	\
 		src/utils/get_min_max.c	\
+		src/utils/smoothing.c	\
 		src/utils/smooth_color.c	\
 		src/utils/vectors.c	\
 		src/utils/string.c	\
@@ -58,7 +64,6 @@ SRC	=	src/core.c	\
 		src/utils/circle_bounds.c	\
 		src/utils/get_arr_len.c	\
 		src/utils/fps.c	\
-		src/utils/radian_to_degree.c	\
 		src/utils/sound.c	\
 		src/utils/get_angle.c	\
 		src/utils/view.c	\

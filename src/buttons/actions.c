@@ -5,7 +5,8 @@
 ** functions.c
 */
 
-#include "my.h"
+#include "structs.h"
+#include "prototypes.h"
 
 void on_click_play(core_t *c, button_t *button)
 {

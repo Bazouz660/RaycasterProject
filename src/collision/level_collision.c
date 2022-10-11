@@ -5,7 +5,9 @@
 ** level_collision.c
 */
 
-#include "my.h"
+#include "includes.h"
+#include "structs.h"
+#include "prototypes.h"
 
 void collision_response(entity_t *entity, sfFloatRect gb, sfFloatRect eb)
 {
