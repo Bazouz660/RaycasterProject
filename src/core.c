@@ -10,15 +10,10 @@
 #include "prototypes.h"
 #include "defines.h"
 
-void free_all(core_t *c)
-{
-    
-}
-
 void close_game(core_t *c)
 {
-    free_all(c);
     sfRenderWindow_close(c->render.window);
+    free_all(c);
 }
 
 void analyse_events(core_t *c)

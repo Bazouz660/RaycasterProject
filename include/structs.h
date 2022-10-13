@@ -143,7 +143,6 @@
         vrect_t *sky;
         wall3d_t *walls;
         sfVertex **fc_buffer;
-        sfVertex **fc_buffer_drawable;
         sfVertexBuffer *buffer;
         float bobbing_clock;
         float *depth_buffer;

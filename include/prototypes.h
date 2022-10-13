@@ -139,6 +139,7 @@
     void button_set_onclick(button_t *button, void(*func)(core_t *, button_t *));
     void button_set_update(button_t *button);
     void button_link_scene(button_t *button, unsigned short scene);
+    void button_destroy(button_t *button);
 
     // UI
     void draw_main_menu(core_t *c);
@@ -151,4 +152,13 @@
     // Rendering
     void draw_entity3d(core_t *c, entity_t *entity);
     void apply_bobbing(core_t *c, bool enable);
+
+    // Memory cleanup
+    void free_all(core_t *c);
+    void free_entities(entity_t *list);
+    void free_level(core_t *c);
+    void free_render(core_t *c);
+    void free_textures(core_t *c);
+    void free_ui(core_t *c);
+
 #endif /*RAYCASTER_PROTOTYPES*/

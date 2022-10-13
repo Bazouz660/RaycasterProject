@@ -37,6 +37,12 @@ SRC	=	src/core.c	\
 		src/raycasting/floor_cast.c	\
 		src/raycasting/wall_cast.c	\
 		src/collision/level_collision.c	\
+		src/free_memory/free_all.c	\
+		src/free_memory/free_entities.c	\
+		src/free_memory/free_level.c	\
+		src/free_memory/free_render.c	\
+		src/free_memory/free_textures.c	\
+		src/free_memory/free_ui.c	\
 		src/level/grid.c	\
 		src/level/load.c	\
 		src/matrix/matrix.c	\

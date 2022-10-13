@@ -22,6 +22,7 @@ button_t *button_create(sfTexture *texture, sfVector2f size, sfVector2f pos)
     button->texture = texture;
     button->on_click = NULL;
     button->shape = sfRectangleShape_create();
+    button->text = sfText_create();
     sfRectangleShape_setSize(button->shape, size);
     sfRectangleShape_setOrigin(button->shape, get_rect_center(button->shape));
     sfRectangleShape_setPosition(button->shape, pos);
@@ -69,4 +70,11 @@ void button_link_scene(button_t *button, unsigned short scene)
 void button_set_onclick(button_t *button, void(*func)(core_t *, button_t *))
 {
     button->on_click = func;
+}
+
+void button_destroy(button_t *button)
+{
+    sfRectangleShape_destroy(button->shape);
+    sfText_destroy(button->text);
+    free(button);
 }
