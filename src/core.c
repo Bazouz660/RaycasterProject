@@ -20,10 +20,11 @@ void analyse_events(core_t *c)
 {
     int mouse_released = 0;
 
-    while (sfRenderWindow_pollEvent(c->render.window, &c->event)) {
-        if (c->event.type == sfEvtMouseButtonReleased)
+    while (sfRenderWindow_pollEvent(c->render.window, &c->events.input)) {
+        update_toggleable_keys(c);
+        if (c->events.input.type == sfEvtMouseButtonReleased)
             mouse_released += 1;
-        if (c->event.type == sfEvtClosed)
+        if (c->events.input.type == sfEvtClosed)
             close_game(c);
         if (sfKeyboard_isKeyPressed(sfKeyEscape)) {
             c->render.scene = 0;
@@ -48,8 +49,11 @@ void update_walls(core_t *c)
 {
     //c->render3d.floor_level = round(0.5f * c->render.w_size.x *\
     //(1 + tan(c->render3d.vertical_angle)) / tan(0.5 * c->render3d.fov));
-    for (int i = 0; i < c->render.nb_rays; i++)
+    for (int i = 0; i < c->render.nb_rays; i++) {
+        if (c->render.rays[i].wall_dist == -1)
+            continue;
         add_wall(c, &c->render3d.walls, c->render.rays[i], c->render3d.fov);
+    }
 }
 
 void horiz_mouse_scroll(core_t *c)

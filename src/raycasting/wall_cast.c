@@ -62,6 +62,10 @@ static void perform_dda(core_t *c, cast_t *cas, ray_t *ray)
           cas->map.y += cas->step.y;
           cas->side = 1;
         }
+        //if (vect_mag(cas->sideDist) * c->level.c_size.x > c->render.render_distance) {
+        //    ray->wall_dist = -1;
+        //    return;
+        //}
         if (cas->map.x >= 0 && cas->map.x < c->level.dim.x && cas->map.y >= 0 &&
             cas->map.y < c->level.dim.y && c->level.gridc[cas->map.y]\
             [cas->map.x]->type > 0) {
@@ -94,22 +98,6 @@ static unsigned short fix_side_dir(core_t *c, cast_t *cas, ray_t *ray, sfVector2
         cas->perpWallDist = (cas->sideDist.x - cas->deltaDist.x);
     } else
         cas->perpWallDist = (cas->sideDist.y - cas->deltaDist.y);
-    if (cas->dir.x >= -0.00000001 && cas->dir.x <= 0.00000001) {
-        ray->v2.position = start;
-        ray->wall_dist = -1;
-        return 1;
-    }
-    if (cas->dir.y >= -0.00000001 && cas->dir.y <= 0.00000001) {
-        ray->v2.position = start;
-        ray->wall_dist = -1;
-        return 1;
-    }
-    if ((cas->perpWallDist * c->level.c_size.x) > cas->maxlen) {
-        cas->perpWallDist = cas->maxlen / c->level.c_size.x;
-        ray->type = 0;
-        ray->wall_dist = -1;
-        cas->color = sfBlack;
-    }
     return 0;
 }
 
@@ -136,13 +124,15 @@ static sfColor determine_end(core_t *c, sfVector2f start, sfVector2f dir,
 float maxlen, ray_t *ray)
 {
     cast_t cas;
+    int val = 0;
 
     init_struct(c, &cas, maxlen, dir, start);
     get_steps_size(dir, &cas);
     perform_dda(c, &cas, ray);
+    if (ray->wall_dist == -1)
+        return (sfColor){84, 84, 84, 84};
     ray->side = cas.side;
-    if (fix_side_dir(c, &cas, ray, start))
-        return sfBlack;
+    val = fix_side_dir(c, &cas, ray, start);
     store_depth_buffer(c, &cas, ray);
     get_next_ray(c, ray, cas.ray_projection_position);
     ray->v2.position = vect_add(start, vect_mult(dir, cas.perpWallDist * c->level.c_size.x));
@@ -157,11 +147,16 @@ sfVector2f refdir, float angle, int index)
     matrix_t rot_mx = new_rot_matrix(angle);
     sfVector2f dir = multiply_vec(&rot_mx, refdir);
     float c_angle;
+    sfColor color;
 
     ray.wall_index = (sfVector2u){0, 0};
     ray.v1.position = start;
     ray.index = index;
-    ray.v2.color = determine_end(c, start, dir, maxlen, &ray);
+    if ((color = determine_end(c, start, dir, maxlen, &ray)).a == 84) {
+        free_matrix(&rot_mx);
+        return ray;
+    }
+    ray.v2.color = color;
     ray.v1.color = ray.v2.color;
     ray.angle = angle;
     c_angle = p_angle - angle;

@@ -93,6 +93,16 @@
         short current_column;
     } cast_t;
 
+    typedef struct switch_key_s {
+        int index;
+        bool prev_state;
+        bool can_press;
+        bool state;
+        sfKeyCode keycode;
+        void (*do_action)(core_t *, struct switch_key_s *);
+        void (*update)(core_t *, struct switch_key_s *);
+    } switch_key_t;
+
     typedef struct button_s {
         int index;
         bool visible;
@@ -114,6 +124,7 @@
         ray_t *rays;
         int nb_rays;
         int nb_levels;
+        bool fullscreen;
         float render_distance;
         sfVector2i ray_pos;
         unsigned short scene;
@@ -221,11 +232,24 @@
         sfRectangleShape *b1;
     } ui_t;
 
+    typedef enum {
+        fullscreen,
+    } toggleable_keys;
+
+    typedef struct keys_s {
+        switch_key_t *toggleable;
+    } keys_t;
+
+    typedef struct events_s {
+        sfEvent input;
+        keys_t keys;
+    } events_t;
+
     struct core_s {
         render_t render;
         render3d_t render3d;
         clock_st clock;
-        sfEvent event;
+        events_t events;
         textures_t textures;
         mouse_t mouse;
         sounds_t sounds;

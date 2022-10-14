@@ -38,6 +38,28 @@ void update_fps(core_t *c)
     }
 }
 
+void fullscreen_toggle(core_t *c)
+{
+    static bool prev_state = false;
+    static bool state = false;
+    static bool enabled = true;
+
+    if (key_pressed(sfKeyF11) && c->render.fullscreen == false && enabled)
+        state = true;
+    else if (key_pressed(sfKeyF11) && c->render.fullscreen == true && enabled)
+        state = false;
+    if (!key_pressed(sfKeyF11))
+        enabled = true;
+    if (prev_state != state) {
+        enabled = false;
+        prev_state = state;
+        c->render.fullscreen = state;
+        sfRenderWindow_close(c->render.window);
+        sfRenderWindow_destroy(c->render.window);
+        c->render.window = create_window("Backrooms", state);
+    }
+}
+
 void update_screen(core_t *c)
 {
     sfRenderWindow_display(c->render.window);

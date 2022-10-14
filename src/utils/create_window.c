@@ -9,7 +9,7 @@
 #include "structs.h"
 #include "prototypes.h"
 
-sfRenderWindow *create_window(sfVector2u size, char const *title)
+sfRenderWindow *create_window(char const *title, bool fullscreen)
 {
     sfRenderWindow *window;
     sfVideoMode mode = sfVideoMode_getDesktopMode();
@@ -35,9 +35,10 @@ sfRenderWindow *create_window(sfVector2u size, char const *title)
     settings.minorVersion = 0;
     settings.sRgbCapable = false;
     settings.stencilBits = 0;
-    mode.width = size.x;
-    mode.height = size.y;
-    window = sfRenderWindow_create(mode, title, sfFullscreen | sfResize | sfClose,
-    &settings);
+    if (fullscreen) {
+        window = sfRenderWindow_create(mode, title, sfFullscreen | sfResize
+        | sfClose, &settings);
+    } else
+        window = sfRenderWindow_create(mode, title, sfResize | sfClose, &settings);
     return window;
 }

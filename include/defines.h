@@ -25,5 +25,7 @@
     #define TransparentRed (sfColor){255, 0, 0, 100}
 
     #define new_texture(path, intrect) sfTexture_createFromFile(path, intrect)
+    #define key_pressed(key) sfKeyboard_isKeyPressed(key)
+
 #endif /*RAYCASTER_DEFINES*/
 

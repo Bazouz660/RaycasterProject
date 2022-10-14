@@ -13,7 +13,7 @@
     #define RAYCASTER_PROTOTYPES
 
     // Utils
-    sfRenderWindow *create_window(sfVector2u size, char const *title);
+    sfRenderWindow *create_window(char const *title, bool fullscreen);
     sfSprite *new_sprite(char *texture_name, float x, float y);
     sfSound *new_sound(sfSound *new_sound, const char *buffer_location);
     void init_animated_sprite(sfSprite *sprite, int columns, int rows);
@@ -160,5 +160,10 @@
     void free_render(core_t *c);
     void free_textures(core_t *c);
     void free_ui(core_t *c);
+
+    // Input
+    void init_toggleable_key(switch_key_t *key, sfKeyCode keycode,
+    void(*action)(core_t *, switch_key_t *));
+    void update_toggleable_keys(core_t *c);
 
 #endif /*RAYCASTER_PROTOTYPES*/

@@ -5,7 +5,7 @@
 ** init.c
 */
 
-#include "buttons.h"
+#include "inputs.h"
 #include "structs.h"
 #include "prototypes.h"
 
@@ -36,7 +36,7 @@ void load_level(core_t *c, level_models_t model)
     sfVector2f pos = bpos;
     int type = 0;
 
-    c->render.render_distance = 2000;
+    c->render.render_distance = 1000;
     c->level.c_size = (sfVector2f){64, 64};
     c->level.dim.x = model.x;
     c->level.dim.y = model.y;
@@ -259,12 +259,21 @@ void init_entities(core_t *c)
     //add_entity(c, &c->entities, (sfVector2f){300, 400}, 1);
 }
 
+void init_keys(core_t *c)
+{
+    c->events.keys.toggleable = malloc(sizeof(switch_key_t) * (2));
+    init_toggleable_key(&c->events.keys.toggleable[0], sfKeyF11,
+    &toggle_fullscreen);
+    c->events.keys.toggleable[1].index = -1;
+}
+
 void init_game(core_t *c)
 {
     c->render.r_size = (sfVector2u){380, 200};
-    c->render.w_size = (sfVector2u){1920, 1080};
-    c->render.window = create_window(c->render.w_size, "Backrooms");
+    c->render.window = create_window("Backrooms", false);
+    c->render.w_size = sfRenderWindow_getSize(c->render.window);
     sfRenderWindow_setPosition(c->render.window, (sfVector2i){0, 0});
+    c->render.fullscreen = false;
     c->clock.clock = sfClock_create();
     c->mouse.lastpos = get_mouse_pos_view(c);
     c->mouse.diff = (sfVector2i){0, 0};
@@ -275,6 +284,7 @@ void init_game(core_t *c)
     init_textures(c);
     init_view(c);
     init_mouse(c);
+    init_keys(c);
     init_level(c);
     init_player(c);
     init_entities(c);
