@@ -118,7 +118,7 @@
 
     // Raycasting
     void cast_rays(core_t *c, entity_t *src);
-    void cast_floor(core_t *c, sfVector2f dir);
+    void cast_floor(core_t *c, sfTexture *texture);
 
     // 3d map
     void add_wall(core_t *c, wall3d_t **head, ray_t ray, int fov);

@@ -158,8 +158,6 @@ sfVector2f refdir, float angle, int index)
     sfVector2f dir = multiply_vec(&rot_mx, refdir);
     float c_angle;
 
-    //cast_floor(c, dir);
-
     ray.wall_index = (sfVector2u){0, 0};
     ray.v1.position = start;
     ray.index = index;
@@ -187,4 +185,6 @@ void cast_rays(core_t *c, entity_t *src)
         src->ref_dir, src->angle + (DR * (((float)(i - c->render.nb_rays / 2) \
         / c->render.nb_rays) * (float)c->render3d.fov)), i);
     }
+
+    cast_floor(c, c->textures.wall[4]);
 }

@@ -144,6 +144,8 @@
         wall3d_t *walls;
         sfVertex **fc_buffer;
         sfVertexBuffer *buffer;
+        float **farness_floor_buffer;
+        float **farness_ceiling_buffer;
         float bobbing_clock;
         float *depth_buffer;
         int fov;

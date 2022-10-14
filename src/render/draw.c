@@ -82,9 +82,9 @@ void draw_background(core_t *c)
 void draw_floor_ceiling(core_t *c)
 {
     for (int i = 0; i < c->render.r_size.x; i++) {
-        for (int j = 0; j < c->render.r_size.y; j++) {
-            c->render3d.fc_buffer[i][j].color = sfWhite;
-        }
+        //for (int j = 0; j < c->render.r_size.y; j++) {
+        //    c->render3d.fc_buffer[i][j].color = sfWhite;
+        //}
         sfVertexBuffer_update(c->render3d.buffer, c->render3d.fc_buffer[i],
         c->render.r_size.y, c->render.r_size.y * i);
     }
@@ -99,7 +99,7 @@ void draw_3d(core_t *c)
     //apply_bobbing(c, true);
     vrect_draw(NULL, c->render3d.rs_render, c->render3d.sky);
     vrect_draw(NULL, c->render3d.rs_render, c->render3d.ground);
-    //draw_floor_ceiling(c);
+    draw_floor_ceiling(c);
     draw_walls(c);
     draw_entities3d(c);
 

@@ -37,7 +37,7 @@ sfRenderWindow *create_window(sfVector2u size, char const *title)
     settings.stencilBits = 0;
     mode.width = size.x;
     mode.height = size.y;
-    window = sfRenderWindow_create(mode, title, sfResize | sfClose,
+    window = sfRenderWindow_create(mode, title, sfFullscreen | sfResize | sfClose,
     &settings);
     return window;
 }

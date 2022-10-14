@@ -36,7 +36,11 @@ wall3d_t *new_section(core_t *c, sfTexture *texture, ray_t ray, float view_heigh
     sfRectangleShape_setPosition(sec->section, (sfVector2f){ray.pos_x + (width / 2), c->render.r_size.y / 2.0});
     sfRectangleShape_setFillColor(sec->section, (sfColor){166 * 1.2,142 * 1.2,43 *1.2,255});
     color = sfRectangleShape_getFillColor(sec->section);
-    color = darken_color(color, 300 / ray.wall_dist);
+    color = darken_color(color, 300 / pow(ray.wall_dist, 1.1));
+    if (ray.index < c->render.r_size.x * 0.5)
+        color = darken_color(color, clamp(0.15, 1, pow((ray.index / ((float)c->render.r_size.x / 2.0)), 0.7)));
+    else
+        color = darken_color(color, clamp(0.15, 1, pow(1.0 - ((ray.index - (c->render.r_size.x * 0.5)) / (float)c->render.r_size.x), 1.7)));
     if (ray.side == 1)
         color = darken_color(color, 0.6);
     sfRectangleShape_setTexture(sec->section, texture, false);

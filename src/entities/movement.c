@@ -11,7 +11,7 @@
 static void apply_sprint(entity_t *entity)
 {
     if (sfKeyboard_isKeyPressed(sfKeyLShift))
-        entity->sprint_speed = 2;
+        entity->sprint_speed = 1.8;
     else
         entity->sprint_speed = 1;
 }
@@ -69,7 +69,7 @@ void entity_reposition(core_t *c, entity_t *entity)
     player_controller(c, entity, &dampen);
     enemy_controller(c, entity);
     entity->acc = vect_mult(vect_unit(entity->acc),
-    (entity->acceleration * (0.2 * entity->sprint_speed)) *\
+    (entity->acceleration * (0.5 * entity->sprint_speed)) *\
     c->clock.elapsed_time / 6.0);
     entity->vel = vect_add(entity->vel, entity->acc);
     entity->vel = lerp2f((sfVector2f){0, 0}, entity->vel,

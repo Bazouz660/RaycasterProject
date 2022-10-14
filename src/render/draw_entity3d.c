@@ -32,12 +32,14 @@ sfVector2f scale)
         sprite_sec[i] = sfRectangleShape_create();
         sfRectangleShape_setSize(sprite_sec[i], (sfVector2f){1, t_size.y});
         sfRectangleShape_setScale(sprite_sec[i], (sfVector2f){1, scale.y});
+        sfRectangleShape_setFillColor(sprite_sec[i], darken_color(sfWhite,
+        pow(1 - (entity->pdistance / 1000.0f), 1.25)));
         sfRectangleShape_setTexture(sprite_sec[i], texture, false);
         sfRectangleShape_setTextureRect(sprite_sec[i],
         (sfIntRect){get_step_tex_x(texture,
         ((float)i / (float)nb_cols)), 0, 1, t_size.y});
         sfRectangleShape_setPosition(sprite_sec[i], (sfVector2f){screen_pos.x \
-        + (i - (nb_cols / 2)), screen_pos.y - (bound.height / 2.0)});
+        + (i - (nb_cols / 2)), screen_pos.y - ((t_size.y * scale.y) - 6)});
         if ((entity->pdistance) < c->render3d.depth_buffer[(int)clamp(0,
             c->render.r_size.x - 1,
             (int)screen_pos.x + (i - (nb_cols / 2)) - 1)])
@@ -70,7 +72,6 @@ void draw_entity3d(core_t *c, entity_t *entity)
     entity->screen_pos = s_pos;
     sfSprite_setPosition(entity->w_sprite, (sfVector2f){s_pos.x, s_pos.y});
     sfSprite_setOrigin(entity->w_sprite, get_sprite_center(entity->w_sprite));
-    sfSprite_setColor(entity->w_sprite, smooth_color(sfBlack,
-    sfWhite, distance / 1000.0f));
+    sfSprite_setColor(entity->w_sprite, darken_color(sfWhite, pow(distance / 1000.0f, 1.15)));
     split_and_draw(c, entity, s_pos, scale);
 }

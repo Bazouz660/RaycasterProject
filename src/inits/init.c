@@ -90,7 +90,7 @@ void init_screen_buffer(core_t *c, sfVector2u rs)
     for (int i = 0; i < rs.x; i++, w++) {
         c->render3d.fc_buffer[i] = malloc(sizeof(sfVertex) * (rs.y + 1));
         for (int j = 0; j < rs.y; j++, w++) {
-            c->render3d.fc_buffer[i][j].position = (sfVector2f){i, j};
+            c->render3d.fc_buffer[i][j].position = (sfVector2f){i + 1, j};
             c->render3d.fc_buffer[i][j].color = random_color();
         }
         sfVertexBuffer_update(c->render3d.buffer, c->render3d.fc_buffer[i], rs.y, rs.y * i);
@@ -113,6 +113,24 @@ void init_render3d(core_t *c)
     sfRectangleShape_setOrigin(c->render3d.fs_renderer, get_rect_center(c->render3d.fs_renderer));
     sfRectangleShape_setPosition(c->render3d.fs_renderer, sfView_getCenter(c->render3d.view));
     init_screen_buffer(c, rs);
+
+
+    sfVector2f floor_center = {c->render.r_size.x / 2.0, c->render.r_size.y * 1.1};
+    sfVector2f ceiling_center = {c->render.r_size.x / 2.0, 0};
+
+    c->render3d.farness_floor_buffer = malloc(sizeof(float *) * c->render.r_size.x);
+    c->render3d.farness_ceiling_buffer = malloc(sizeof(float *) * c->render.r_size.x);
+
+    for (int x = 0; x < c->render.r_size.x; x++) {
+        c->render3d.farness_floor_buffer[x] = malloc(sizeof(float) * c->render.r_size.y);
+        c->render3d.farness_ceiling_buffer[x] = malloc(sizeof(float) * c->render.r_size.y);
+        for (int y = 0; y < c->render.r_size.y; y++) {
+            c->render3d.farness_floor_buffer[x][y] = clamp(0.1, 1, 1.0 - (pow(dist_from((sfVector2f){x,
+            pow(y, (y  / (float)floor_center.x))}, floor_center), 1.15) / 500.0));
+            c->render3d.farness_ceiling_buffer[x][y] = clamp(0.1, 1, 1.0 - (pow(dist_from((sfVector2f){x,
+            pow(y, (y / (float)ceiling_center.x))}, floor_center), 1.15) / 500.0));
+        }
+    }
 
     c->render.nb_rays = c->render.r_size.x;
     c->render3d.fov = 70;
@@ -139,12 +157,13 @@ void init_render3d(core_t *c)
 
 void init_textures(core_t *c)
 {
-    c->textures.wall = malloc(sizeof(sfTexture *) * (5));
+    c->textures.wall = malloc(sizeof(sfTexture *) * (6));
     c->textures.wall[0] = new_texture("assets/walls/brick.jpg", NULL);
     c->textures.wall[1] = new_texture("assets/walls/brick2.jpg", NULL);
     c->textures.wall[2] = new_texture("assets/walls/door.jpg", NULL);
     c->textures.wall[3] = new_texture("assets/walls/tile.jpg", NULL);
-    c->textures.wall[4] = NULL;
+    c->textures.wall[4] = new_texture("assets/walls/floor.png", NULL);
+    c->textures.wall[5] = NULL;
     c->textures.button[0] = new_texture("assets/buttons/play.png", NULL);
     c->textures.button[1] = new_texture("assets/buttons/exit.png", NULL);
     c->textures.button[2] = new_texture("assets/buttons/lvl_select.png", NULL);
@@ -152,7 +171,7 @@ void init_textures(core_t *c)
     c->textures.button[4] = new_texture("assets/buttons/prev.png", NULL);
     c->textures.background[0] = new_texture("assets/backgrounds/main_menu.jpg",
     NULL);
-    c->textures.enemy[0] = new_texture("assets/enemies/amogus.png", NULL);
+    c->textures.enemy[0] = new_texture("assets/enemies/elgato.png", NULL);
 }
 
 void init_mouse(core_t *c)
