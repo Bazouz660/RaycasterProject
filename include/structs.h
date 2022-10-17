@@ -68,6 +68,7 @@
         float next_pos_x;
         float angle;
         float wall_dist;
+        float c_angle;
         int tex_x;
         int type;
         int side;
@@ -155,6 +156,11 @@
         wall3d_t *walls;
         sfVertex **fc_buffer;
         sfVertexBuffer *buffer;
+        sfImage *floor_image;
+        sfImage *ceiling_image;
+        sfVector2u ft_size;
+        sfVector2u ct_size;
+        sfVector2f plane;
         float **farness_floor_buffer;
         float **farness_ceiling_buffer;
         float bobbing_clock;

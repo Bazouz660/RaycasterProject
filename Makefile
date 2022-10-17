@@ -37,7 +37,6 @@ SRC	=	src/core.c	\
 		src/inputs/keys/update.c	\
 		src/vertex/v_rect.c	\
 		src/projection/walls.c	\
-		src/raycasting/floor_cast.c	\
 		src/raycasting/wall_cast.c	\
 		src/collision/level_collision.c	\
 		src/free_memory/free_all.c	\

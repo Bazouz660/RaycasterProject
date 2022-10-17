@@ -137,6 +137,66 @@ float maxlen, ray_t *ray)
     get_next_ray(c, ray, cas.ray_projection_position);
     ray->v2.position = vect_add(start, vect_mult(dir, cas.perpWallDist * c->level.c_size.x));
     ray->wall_x = get_wall_x(cas.side, cas.perpWallDist, cas.r_pos, dir);
+
+
+    //FLOOR CASTING (vertical version, directly after drawing the vertical wall stripe for the current x)
+    double floorXWall, floorYWall; //x, y position of the floor texel at the bottom of the wall
+    //4 different wall directions possible
+    cas.perpWallDist *= cos(ray->c_angle);
+    if(cas.side == 0 && ray->dir.x > 0)
+    {
+      floorXWall = cas.map.x;
+      floorYWall = cas.map.y + ray->wall_x;
+    }
+    else if(cas.side == 0 && ray->dir.x < 0)
+    {
+      floorXWall = cas.map.x + 1.0;
+      floorYWall = cas.map.y + ray->wall_x;
+    }
+    else if(cas.side == 1 && ray->dir.x > 0)
+    {
+      floorXWall = cas.map.x + ray->wall_x;
+      floorYWall = cas.map.y;
+    }
+    else
+    {
+      floorXWall = cas.map.x + ray->wall_x;
+      floorYWall = cas.map.y + 1.0;
+    }
+    double distWall, distPlayer, currentDist;
+    distWall = cas.perpWallDist;
+    distPlayer = 0.0;
+
+
+    int lineHeight = (int)(c->render.r_size.y / cas.perpWallDist);
+    //calculate lowest and highest pixel to fill in current stripe
+    int drawStart = -lineHeight / 2 + c->render.r_size.y / 2;
+    if(drawStart < 0) drawStart = 0;
+    int drawEnd = lineHeight / 2 + c->render.r_size.y / 2;
+    if(drawEnd >= c->render.r_size.y) drawEnd = c->render.r_size.y - 1;
+
+    sfColor color;
+
+    if (drawEnd < 0) drawEnd = c->render.r_size.y; //becomes < 0 when the integer overflows
+    //draw the floor from drawEnd to the bottom of the screen
+    for(int y = drawEnd + 1; y < c->render.r_size.y; y++)
+    {
+      currentDist = c->render.r_size.y / (2.0 * y - c->render.r_size.y); //you could make a small lookup table for this instead
+      double weight = (currentDist - distPlayer) / (distWall - distPlayer);
+      double currentFloorX = weight * floorXWall + (1.0 - weight) * cas.r_pos.x;
+      double currentFloorY = weight * floorYWall + (1.0 - weight) * cas.r_pos.y;
+      int floorTexX, floorTexY;
+      floorTexX = (int)(currentFloorX * c->render3d.ft_size.x) % c->render3d.ft_size.x;
+      floorTexY = (int)(currentFloorY * c->render3d.ft_size.y) % c->render3d.ft_size.y;
+
+      color = sfImage_getPixel(c->render3d.floor_image, floorTexX, floorTexY);
+      color = darken_color(color, c->render3d.farness_floor_buffer[ray->index][y]);
+      c->render3d.fc_buffer[ray->index][y].color = color;
+      //floor
+      color = sfImage_getPixel(c->render3d.floor_image, floorTexX, floorTexY);
+      color = darken_color(color, c->render3d.farness_ceiling_buffer[ray->index][y]);
+      c->render3d.fc_buffer[ray->index][c->render.r_size.y - y - 1].color = color;
+    }
     return cas.color;
 }
 
@@ -152,18 +212,19 @@ sfVector2f refdir, float angle, int index)
     ray.wall_index = (sfVector2u){0, 0};
     ray.v1.position = start;
     ray.index = index;
-    if ((color = determine_end(c, start, dir, maxlen, &ray)).a == 84) {
-        free_matrix(&rot_mx);
-        return ray;
-    }
-    ray.v2.color = color;
-    ray.v1.color = ray.v2.color;
     ray.angle = angle;
     c_angle = p_angle - angle;
     if (c_angle < 0)
         c_angle += 2 * PI;
     if (c_angle > 2 * PI)
         c_angle -= 2 * PI;
+    ray.c_angle = c_angle;
+    if ((color = determine_end(c, start, dir, maxlen, &ray)).a == 84) {
+        free_matrix(&rot_mx);
+        return ray;
+    }
+    ray.v2.color = color;
+    ray.v1.color = ray.v2.color;
     ray.wall_dist *= cos(c_angle);
     ray.dir = dir;
     free_matrix(&rot_mx);
@@ -172,6 +233,15 @@ sfVector2f refdir, float angle, int index)
 
 void cast_rays(core_t *c, entity_t *src)
 {
+
+    sfVector2u t_size = sfTexture_getSize(c->textures.wall[4]);
+    if (!c->render3d.floor_image) {
+        c->render3d.floor_image = sfImage_create(c->render.r_size.x, c->render.r_size.y);
+        c->render3d.floor_image = sfTexture_copyToImage(c->textures.wall[4]);
+    }
+
+    c->render3d.ft_size = t_size;
+
     c->render.rays = NULL;
     c->render.rays = malloc(sizeof(ray_t) * (c->render.nb_rays + 1));
     for (int i = 0; i < c->render.nb_rays; i++) {
@@ -181,5 +251,5 @@ void cast_rays(core_t *c, entity_t *src)
         / c->render.nb_rays) * (float)c->render3d.fov)), i);
     }
 
-    cast_floor(c, c->textures.wall[4]);
+    //cast_floor(c, c->textures.wall[4]);
 }

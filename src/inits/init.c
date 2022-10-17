@@ -36,7 +36,7 @@ void load_level(core_t *c, level_models_t model)
     sfVector2f pos = bpos;
     int type = 0;
 
-    c->render.render_distance = 1000;
+    c->render.render_distance = 3000;
     c->level.c_size = (sfVector2f){64, 64};
     c->level.dim.x = model.x;
     c->level.dim.y = model.y;
